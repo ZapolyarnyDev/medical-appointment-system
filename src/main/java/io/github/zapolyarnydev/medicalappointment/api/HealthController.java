@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HealthController {
 
-    @GetMapping("/api/health")
-    public @NotNull Map<String, String> health() {
-        return Map.of("status", "UP");
-    }
+  @GetMapping("/api/health")
+  public @NotNull Map<String, String> health() {
+    return Map.of("status", "UP");
+  }
 }

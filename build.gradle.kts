@@ -1,6 +1,7 @@
 plugins {
     java
     alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spotless)
 }
 
 group = "io.github.zapolyarnydev"
@@ -45,4 +46,29 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     testClassesDirs = sourceSets.test.get().output.classesDirs
     classpath = sourceSets.test.get().runtimeClasspath
+}
+
+spotless {
+    java {
+        target("src/**/*.java")
+        googleJavaFormat()
+        removeUnusedImports()
+        formatAnnotations()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+
+    format("gradle") {
+        target("*.gradle.kts", "gradle/**/*.toml")
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(4)
+        endWithNewline()
+    }
+
+    format("misc") {
+        target("*.md", "*.yml", "*.yaml", "*.properties", ".gitignore", ".gitattributes", ".editorconfig")
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(4)
+        endWithNewline()
+    }
 }
