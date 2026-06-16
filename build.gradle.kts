@@ -72,3 +72,14 @@ spotless {
         endWithNewline()
     }
 }
+
+tasks.register("installGitHooks") {
+    group = "git"
+    description = "Configure this repository to use hooks from .githooks."
+
+    doLast {
+        providers.exec {
+            commandLine("git", "config", "core.hooksPath", ".githooks")
+        }.result.get().assertNormalExitValue()
+    }
+}
