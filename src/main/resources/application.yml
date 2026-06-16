@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: medical-appointment-system
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/medical_appointment}
+    username: ${DB_USERNAME:medical_appointment}
+    password: ${DB_PASSWORD:medical_appointment}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    locations: classpath:db/migration
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OAUTH2_ISSUER_URI:http://localhost:8081/realms/medical-appointment}
+  jooq:
+    sql-dialect: postgres
+
+server:
+  port: ${SERVER_PORT:8080}
