@@ -5,5 +5,10 @@ springdoc:
     enabled: false
 
 app:
+  deployment:
+    profile: prod
+    operations:
+      require-secure-cookies: true
+      expose-diagnostics: false
   security:
     public-docs-enabled: false

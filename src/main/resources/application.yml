@@ -41,6 +41,15 @@ server:
   port: ${SERVER_PORT:8080}
 
 app:
+  deployment:
+    profile: ${DEPLOYMENT_PROFILE:local}
+    endpoints:
+      public-base-url: ${APP_PUBLIC_URL:http://public.localhost:8080}
+      internal-base-url: ${APP_INTERNAL_URL:http://internal.localhost:8080}
+      auth-base-url: ${APP_AUTH_URL:http://auth.localhost:8080}
+    operations:
+      require-secure-cookies: ${REQUIRE_SECURE_COOKIES:false}
+      expose-diagnostics: ${EXPOSE_DIAGNOSTICS:false}
   identity:
     mode: ${IDENTITY_MODE:LOCAL}
     urls:

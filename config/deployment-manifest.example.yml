@@ -1,0 +1,18 @@
+deployment:
+  profile: hospital-compose
+  urls:
+    public: http://public.localhost:8080
+    internal: http://internal.localhost:8080
+    auth: http://auth.localhost:8080
+  identity:
+    mode: LOCAL
+    publicClientId: medical-appointment-public
+    internalClientId: medical-appointment-internal
+  database:
+    host: postgres
+    port: 5432
+    name: medical_appointment
+    user: medical_appointment
+  operations:
+    publicDocsEnabled: true
+    exposeDiagnostics: false
