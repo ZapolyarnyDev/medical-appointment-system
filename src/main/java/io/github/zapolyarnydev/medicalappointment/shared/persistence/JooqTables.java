@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.medicalappointment.persistence;
+package io.github.zapolyarnydev.medicalappointment.shared.persistence;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

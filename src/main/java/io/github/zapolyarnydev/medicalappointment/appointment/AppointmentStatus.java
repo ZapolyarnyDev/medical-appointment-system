@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.medicalappointment.domain;
+package io.github.zapolyarnydev.medicalappointment.appointment;
 
 public enum AppointmentStatus {
   CREATED,

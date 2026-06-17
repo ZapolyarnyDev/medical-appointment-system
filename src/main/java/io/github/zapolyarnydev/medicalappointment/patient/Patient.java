@@ -1,13 +1,14 @@
-package io.github.zapolyarnydev.medicalappointment.domain;
+package io.github.zapolyarnydev.medicalappointment.patient;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public record Doctor(
+public record Patient(
     @NotNull Long id,
-    @NotNull Long specializationId,
     @NotNull String fullName,
-    @Nullable String cabinet,
-    boolean active,
+    @NotNull LocalDate birthDate,
+    @NotNull String phone,
+    @Nullable String policyNumber,
     @NotNull LocalDateTime createdAt) {}

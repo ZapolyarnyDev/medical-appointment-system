@@ -1,8 +1,7 @@
-package io.github.zapolyarnydev.medicalappointment.persistence;
+package io.github.zapolyarnydev.medicalappointment.specialization;
 
-import static io.github.zapolyarnydev.medicalappointment.persistence.JooqTables.Specializations;
+import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqTables.Specializations;
 
-import io.github.zapolyarnydev.medicalappointment.domain.Specialization;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

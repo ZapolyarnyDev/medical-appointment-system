@@ -1,9 +1,7 @@
-package io.github.zapolyarnydev.medicalappointment.persistence;
+package io.github.zapolyarnydev.medicalappointment.schedule;
 
-import static io.github.zapolyarnydev.medicalappointment.persistence.JooqTables.ScheduleSlots;
+import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqTables.ScheduleSlots;
 
-import io.github.zapolyarnydev.medicalappointment.domain.ScheduleSlot;
-import io.github.zapolyarnydev.medicalappointment.domain.SlotStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -55,6 +53,15 @@ public class ScheduleSlotRepository {
     return dsl.update(ScheduleSlots.TABLE)
         .set(ScheduleSlots.STATUS, status.name())
         .where(ScheduleSlots.ID.eq(id))
+        .execute();
+  }
+
+  public int updateStatusIfCurrent(
+      @NotNull Long id, @NotNull SlotStatus currentStatus, @NotNull SlotStatus nextStatus) {
+    return dsl.update(ScheduleSlots.TABLE)
+        .set(ScheduleSlots.STATUS, nextStatus.name())
+        .where(ScheduleSlots.ID.eq(id))
+        .and(ScheduleSlots.STATUS.eq(currentStatus.name()))
         .execute();
   }
 

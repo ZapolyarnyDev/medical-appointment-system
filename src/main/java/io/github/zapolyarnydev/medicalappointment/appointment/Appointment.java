@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.medicalappointment.domain;
+package io.github.zapolyarnydev.medicalappointment.appointment;
 
 import java.time.LocalDateTime;
 import org.jetbrains.annotations.NotNull;

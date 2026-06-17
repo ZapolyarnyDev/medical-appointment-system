@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.medicalappointment.api;
+package io.github.zapolyarnydev.medicalappointment.health;
 
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;

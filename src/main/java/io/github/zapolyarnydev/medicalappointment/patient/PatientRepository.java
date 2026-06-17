@@ -1,8 +1,7 @@
-package io.github.zapolyarnydev.medicalappointment.persistence;
+package io.github.zapolyarnydev.medicalappointment.patient;
 
-import static io.github.zapolyarnydev.medicalappointment.persistence.JooqTables.Patients;
+import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqTables.Patients;
 
-import io.github.zapolyarnydev.medicalappointment.domain.Patient;
 import java.time.LocalDate;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
