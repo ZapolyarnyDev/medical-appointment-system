@@ -11,6 +11,7 @@ import io.github.zapolyarnydev.medicalappointment.schedule.ScheduleService;
 import java.security.Principal;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +33,22 @@ public class RegistryUiController {
 
   @GetMapping("/internal/registry")
   public String registry(
-      @RequestParam(required = false) Long doctorId, Model model, Principal principal) {
+      @RequestParam(required = false) Long doctorId,
+      @RequestParam(required = false) Long patientId,
+      @RequestParam(required = false) String patientQuery,
+      Model model,
+      Principal principal) {
     uiSupport.addCurrentUser(model, principal);
-    model.addAttribute("patients", patientRepository.findAll());
+    model.addAttribute(
+        "patients",
+        patientQuery == null || patientQuery.isBlank()
+            ? patientRepository.findAll()
+            : patientRepository.search(patientQuery));
     model.addAttribute("doctors", doctorRepository.findAll());
     model.addAttribute("appointments", appointmentQueryService.findDetails());
     model.addAttribute("selectedDoctorId", doctorId);
+    model.addAttribute("selectedPatientId", patientId);
+    model.addAttribute("patientQuery", patientQuery);
 
     if (doctorId != null) {
       model.addAttribute("slots", scheduleService.findAvailableFutureSlotsByDoctor(doctorId));
@@ -53,8 +64,13 @@ public class RegistryUiController {
       @RequestParam String phone,
       @RequestParam(required = false) String policyNumber,
       RedirectAttributes redirectAttributes) {
-    patientRepository.create(fullName, birthDate, phone, blankToNull(policyNumber));
-    redirectAttributes.addFlashAttribute("success", "Пациент добавлен");
+    try {
+      patientRepository.create(fullName.trim(), birthDate, phone.trim(), blankToNull(policyNumber));
+      redirectAttributes.addFlashAttribute("success", "Пациент добавлен");
+    } catch (DataAccessException exception) {
+      redirectAttributes.addFlashAttribute(
+          "error", "Пациент с таким телефоном или полисом уже существует");
+    }
     return "redirect:/internal/registry";
   }
 

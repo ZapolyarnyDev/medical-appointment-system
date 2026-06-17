@@ -44,6 +44,7 @@
           <div class="panel-header"><h2>Запись на прием</h2></div>
           <div class="panel-body stack">
             <form class="fields" th:action="@{/internal/registry}" method="get">
+              <input type="hidden" name="patientId" th:value="${selectedPatientId}" />
               <div class="field">
                 <label for="doctorIdFilter">Врач</label>
                 <select id="doctorIdFilter" name="doctorId" onchange="this.form.submit()">
@@ -58,13 +59,35 @@
               </div>
             </form>
 
+            <form class="fields" th:action="@{/internal/registry}" method="get">
+              <input type="hidden" name="doctorId" th:value="${selectedDoctorId}" />
+              <div class="field full">
+                <label for="patientQuery">Поиск пациента</label>
+                <input
+                  id="patientQuery"
+                  name="patientQuery"
+                  placeholder="ФИО, телефон или полис"
+                  th:value="${patientQuery}"
+                />
+              </div>
+              <div class="field">
+                <label>&nbsp;</label>
+                <button class="button" type="submit">Найти</button>
+              </div>
+            </form>
+
             <form class="fields" th:if="${selectedDoctorId != null}" th:action="@{/internal/registry/appointments}" method="post">
               <input type="hidden" name="doctorId" th:value="${selectedDoctorId}" />
               <div class="field">
                 <label for="patientId">Пациент</label>
                 <select id="patientId" name="patientId" required>
                   <option value="">Выберите пациента</option>
-                  <option th:each="patient : ${patients}" th:value="${patient.id}" th:text="${patient.fullName}"></option>
+                  <option
+                    th:each="patient : ${patients}"
+                    th:value="${patient.id}"
+                    th:selected="${patient.id == selectedPatientId}"
+                    th:text="${patient.fullName + ' · ' + patient.phone}"
+                  ></option>
                 </select>
               </div>
               <div class="field">

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
 import org.jooq.Record;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -21,6 +22,16 @@ public class PatientRepository {
 
   public @NotNull List<Patient> findAll() {
     return dsl.selectFrom(Patients.TABLE).orderBy(Patients.FULL_NAME).fetch(this::map);
+  }
+
+  public @NotNull List<Patient> search(@NotNull String query) {
+    String pattern = "%" + query.toLowerCase().trim() + "%";
+    return dsl.selectFrom(Patients.TABLE)
+        .where(DSL.lower(Patients.FULL_NAME).like(pattern))
+        .or(DSL.lower(Patients.PHONE).like(pattern))
+        .or(DSL.lower(Patients.POLICY_NUMBER).like(pattern))
+        .orderBy(Patients.FULL_NAME)
+        .fetch(this::map);
   }
 
   public @NotNull Optional<Patient> findById(@NotNull Long id) {
