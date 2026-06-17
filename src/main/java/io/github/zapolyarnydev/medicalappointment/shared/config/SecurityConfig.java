@@ -13,7 +13,7 @@ import org.springframework.security.web.servlet.util.matcher.PathPatternRequestM
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 @Configuration
-@EnableConfigurationProperties(SecurityProperties.class)
+@EnableConfigurationProperties({SecurityProperties.class, IdentityProperties.class})
 public class SecurityConfig {
 
   private static final String[] OPENAPI_ENDPOINTS = {
@@ -24,6 +24,8 @@ public class SecurityConfig {
   private static final String DOCTOR = "DOCTOR";
   private static final String REGISTRAR = "REGISTRAR";
   private static final String CHIEF_DOCTOR = "CHIEF_DOCTOR";
+  private static final String PUBLIC_AUTHORIZATION_URI = "/oauth2/authorization/public";
+  private static final String INTERNAL_AUTHORIZATION_URI = "/oauth2/authorization/internal";
 
   @Bean
   public SecurityFilterChain securityFilterChain(
@@ -67,13 +69,16 @@ public class SecurityConfig {
                 oauth2.userInfoEndpoint(
                     userInfo -> userInfo.userAuthoritiesMapper(keycloakAuthoritiesMapper)))
         .exceptionHandling(
-            exceptions ->
-                exceptions.defaultAuthenticationEntryPointFor(
-                    new LoginUrlAuthenticationEntryPoint("/oauth2/authorization/keycloak"),
-                    new OrRequestMatcher(
-                        PathPatternRequestMatcher.pathPattern("/account/**"),
-                        PathPatternRequestMatcher.pathPattern("/internal/**"),
-                        PathPatternRequestMatcher.pathPattern("/admin/**"))))
+            exceptions -> {
+              exceptions.defaultAuthenticationEntryPointFor(
+                  new LoginUrlAuthenticationEntryPoint(PUBLIC_AUTHORIZATION_URI),
+                  PathPatternRequestMatcher.pathPattern("/account/**"));
+              exceptions.defaultAuthenticationEntryPointFor(
+                  new LoginUrlAuthenticationEntryPoint(INTERNAL_AUTHORIZATION_URI),
+                  new OrRequestMatcher(
+                      PathPatternRequestMatcher.pathPattern("/internal/**"),
+                      PathPatternRequestMatcher.pathPattern("/admin/**")));
+            })
         .build();
   }
 

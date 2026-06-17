@@ -22,9 +22,15 @@ spring:
             issuer-uri: ${OAUTH2_ISSUER_URI:http://localhost:8081/realms/medical-appointment}
             user-name-attribute: preferred_username
         registration:
-          keycloak:
+          public:
             provider: keycloak
-            client-id: ${OAUTH2_CLIENT_ID:medical-appointment-local}
+            client-id: ${OAUTH2_PUBLIC_CLIENT_ID:medical-appointment-public}
+            client-authentication-method: none
+            authorization-grant-type: authorization_code
+            scope: openid,profile,email
+          internal:
+            provider: keycloak
+            client-id: ${OAUTH2_INTERNAL_CLIENT_ID:medical-appointment-internal}
             client-authentication-method: none
             authorization-grant-type: authorization_code
             scope: openid,profile,email
@@ -35,5 +41,13 @@ server:
   port: ${SERVER_PORT:8080}
 
 app:
+  identity:
+    mode: ${IDENTITY_MODE:LOCAL}
+    urls:
+      public-url: ${APP_PUBLIC_URL:http://localhost:8080}
+      internal-url: ${APP_INTERNAL_URL:http://localhost:8080}
+    clients:
+      public: ${OAUTH2_PUBLIC_CLIENT_ID:medical-appointment-public}
+      internal-client-id: ${OAUTH2_INTERNAL_CLIENT_ID:medical-appointment-internal}
   security:
     public-docs-enabled: ${PUBLIC_DOCS_ENABLED:true}

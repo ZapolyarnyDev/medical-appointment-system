@@ -80,7 +80,7 @@
                 <td th:text="${#temporals.format(slot.startTime, 'dd.MM.yyyy HH:mm')}"></td>
                 <td th:text="${#temporals.format(slot.endTime, 'HH:mm')}"></td>
                 <td>
-                  <a class="button primary" th:href="@{/oauth2/authorization/keycloak}" th:if="${!authenticated}">
+                  <a class="button primary" th:href="@{/oauth2/authorization/public}" th:if="${!authenticated}">
                     Войти для записи
                   </a>
                   <a

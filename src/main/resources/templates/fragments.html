@@ -14,7 +14,7 @@
       </nav>
       <div class="nav">
         <span class="user" th:if="${authenticated}" th:text="${username}">user</span>
-        <a th:if="${!authenticated}" th:href="@{/oauth2/authorization/keycloak}">Войти</a>
+        <a th:if="${!authenticated}" th:href="@{/oauth2/authorization/public}">Войти</a>
         <form th:if="${authenticated}" th:action="@{/logout}" method="post">
           <button type="submit">Выйти</button>
         </form>
