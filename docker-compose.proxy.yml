@@ -1,0 +1,27 @@
+services:
+  reverse-proxy:
+    profiles:
+      - proxy
+    image: caddy:2-alpine
+    container_name: medical-appointment-proxy
+    ports:
+      - "${PUBLIC_HTTP_PORT:-8080}:80"
+    volumes:
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      app:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    networks:
+      default:
+        aliases:
+          - public.localhost
+          - internal.localhost
+          - auth.localhost
+
+  keycloak:
+    environment:
+      KC_HTTP_ENABLED: true
+      KC_PROXY_HEADERS: xforwarded
+      KC_HOSTNAME: ${KEYCLOAK_HOSTNAME:-http://auth.localhost:8080}

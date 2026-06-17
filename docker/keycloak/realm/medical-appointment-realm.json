@@ -39,11 +39,13 @@
       "serviceAccountsEnabled": false,
       "redirectUris": [
         "http://localhost:8080/*",
+        "http://public.localhost:8080/*",
         "http://localhost:8080/account/*",
         "http://localhost:8080/booking/*"
       ],
       "webOrigins": [
-        "http://localhost:8080"
+        "http://localhost:8080",
+        "http://public.localhost:8080"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256"
@@ -76,12 +78,14 @@
       "serviceAccountsEnabled": false,
       "redirectUris": [
         "http://localhost:8080/*",
+        "http://internal.localhost:8080/*",
         "http://localhost:8080/internal/*",
         "http://localhost:8080/admin/*",
         "http://localhost:8080/swagger-ui/*"
       ],
       "webOrigins": [
-        "http://localhost:8080"
+        "http://localhost:8080",
+        "http://internal.localhost:8080"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256"

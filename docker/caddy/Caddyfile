@@ -1,0 +1,24 @@
+{
+	auto_https off
+}
+
+:80 {
+	@auth host auth.localhost
+	handle @auth {
+		reverse_proxy keycloak:8080
+	}
+
+	@internal host internal.localhost
+	handle @internal {
+		reverse_proxy app:8080
+	}
+
+	@public host public.localhost
+	handle @public {
+		@closed path /internal/* /admin/*
+		respond @closed 404
+		reverse_proxy app:8080
+	}
+
+	respond 404
+}
