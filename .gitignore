@@ -3,5 +3,8 @@ build/
 out/
 *.iml
 .idea/
+.env
+.env.*
+!.env.example
 
 !gradle/wrapper/gradle-wrapper.jar

@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: medical-appointment-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-medical_appointment}
+      POSTGRES_USER: ${POSTGRES_USER:-medical_appointment}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-medical_appointment}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: ${KEYCLOAK_IMAGE:-quay.io/keycloak/keycloak:26.6.3}
+    container_name: medical-appointment-keycloak
+    command:
+      - start-dev
+      - --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_HTTP_PORT: 8080
+    ports:
+      - "${KEYCLOAK_PORT:-8081}:8080"
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+      - ./docker/keycloak/realm:/opt/keycloak/data/import:ro
+
+volumes:
+  postgres-data:
+  keycloak-data:

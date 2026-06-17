@@ -1,0 +1,126 @@
+{
+  "realm": "medical-appointment",
+  "enabled": true,
+  "displayName": "Система записи на прием",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": false,
+  "editUsernameAllowed": false,
+  "roles": {
+    "realm": [
+      {
+        "name": "PATIENT",
+        "description": "Пациент, который может просматривать врачей и записываться на прием"
+      },
+      {
+        "name": "REGISTRAR",
+        "description": "Регистратор, который может записывать пациентов на прием"
+      },
+      {
+        "name": "CHIEF_DOCTOR",
+        "description": "Главный врач, который может просматривать расписание и записи пациентов"
+      },
+      {
+        "name": "DOCTOR",
+        "description": "Учетная запись врача"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "medical-appointment-local",
+      "name": "Локальный клиент системы записи на прием",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8080/*",
+        "http://localhost:8080/swagger-ui/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8080"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "patient",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Локальный",
+      "lastName": "Пациент",
+      "email": "patient@example.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "patient",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "PATIENT"
+      ]
+    },
+    {
+      "username": "registrar",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Локальный",
+      "lastName": "Регистратор",
+      "email": "registrar@example.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "registrar",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "REGISTRAR"
+      ]
+    },
+    {
+      "username": "chief-doctor",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Локальный",
+      "lastName": "Главный врач",
+      "email": "chief-doctor@example.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "chief-doctor",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "CHIEF_DOCTOR"
+      ]
+    },
+    {
+      "username": "doctor",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Локальный",
+      "lastName": "Врач",
+      "email": "doctor@example.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "doctor",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "DOCTOR"
+      ]
+    }
+  ]
+}
