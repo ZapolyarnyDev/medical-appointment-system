@@ -16,7 +16,7 @@
         <section class="panel span-4">
           <div class="panel-header"><h2>Специализация</h2></div>
           <div class="panel-body">
-            <form class="stack" th:action="@{/ui/admin/specializations}" method="post">
+            <form class="stack" th:action="@{/admin/specializations}" method="post">
               <div class="field">
                 <label for="specializationName">Название</label>
                 <input id="specializationName" name="name" required />
@@ -33,7 +33,7 @@
         <section class="panel span-4">
           <div class="panel-header"><h2>Врач</h2></div>
           <div class="panel-body">
-            <form class="stack" th:action="@{/ui/admin/doctors}" method="post">
+            <form class="stack" th:action="@{/admin/doctors}" method="post">
               <div class="field">
                 <label for="doctorSpecializationId">Специализация</label>
                 <select id="doctorSpecializationId" name="specializationId" required>
@@ -61,7 +61,7 @@
         <section class="panel span-4">
           <div class="panel-header"><h2>Слот</h2></div>
           <div class="panel-body">
-            <form class="stack" th:action="@{/ui/admin/slots}" method="post">
+            <form class="stack" th:action="@{/admin/slots}" method="post">
               <div class="field">
                 <label for="slotDoctorId">Врач</label>
                 <select id="slotDoctorId" name="doctorId" required>
@@ -97,7 +97,7 @@
               <tr th:each="doctor : ${doctors}">
                 <td th:text="${doctor.fullName}"></td>
                 <td th:text="${doctor.cabinet ?: '-'}"></td>
-                <td><a class="button" th:href="@{/ui/admin(doctorId=${doctor.id})}">Слоты</a></td>
+                <td><a class="button" th:href="@{/admin(doctorId=${doctor.id})}">Слоты</a></td>
               </tr>
             </tbody>
           </table>
@@ -145,7 +145,7 @@
                 <td th:text="${#temporals.format(appointment.startTime, 'dd.MM.yyyy HH:mm')}"></td>
                 <td><span class="pill" th:text="${labels.appointmentStatus(appointment.status)}"></span></td>
                 <td>
-                  <form class="actions" th:action="@{/ui/admin/appointments/status}" method="post">
+                  <form class="actions" th:action="@{/admin/appointments/status}" method="post">
                     <input type="hidden" name="appointmentId" th:value="${appointment.id}" />
                     <select name="status">
                       <option value="CREATED" th:selected="${appointment.status.name() == 'CREATED'}">Создана</option>

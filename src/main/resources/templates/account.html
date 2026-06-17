@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Кабинет пациента</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+  </head>
+  <body>
+    <header th:replace="~{fragments :: topbar}"></header>
+    <main class="page">
+      <div class="page-title">
+        <h1>Кабинет пациента</h1>
+        <a class="button" th:href="@{/booking}">Найти врача</a>
+      </div>
+      <div th:replace="~{fragments :: notices}"></div>
+
+      <section class="panel">
+        <div class="panel-header"><h2>Мои записи</h2></div>
+        <div class="empty" th:if="${patientAccountMissing}">
+          Профиль пациента не привязан к учетной записи. Обратитесь в регистратуру.
+        </div>
+        <div class="empty" th:if="${!patientAccountMissing and #lists.isEmpty(appointments)}">
+          Активных записей пока нет
+        </div>
+        <table th:if="${!patientAccountMissing and !#lists.isEmpty(appointments)}">
+          <thead>
+            <tr>
+              <th>Врач</th>
+              <th>Время</th>
+              <th>Статус</th>
+              <th>Источник</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="appointment : ${appointments}">
+              <td>
+                <span th:text="${appointment.doctorFullName}"></span>
+                <div class="muted" th:text="${appointment.cabinet}"></div>
+              </td>
+              <td th:text="${#temporals.format(appointment.startTime, 'dd.MM.yyyy HH:mm')}"></td>
+              <td><span class="pill" th:text="${labels.appointmentStatus(appointment.status)}"></span></td>
+              <td th:text="${labels.appointmentSource(appointment.source)}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>

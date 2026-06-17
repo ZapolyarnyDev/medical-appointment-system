@@ -16,7 +16,7 @@
         <section class="panel span-5">
           <div class="panel-header"><h2>Новый пациент</h2></div>
           <div class="panel-body">
-            <form class="fields" th:action="@{/ui/registry/patients}" method="post">
+            <form class="fields" th:action="@{/internal/registry/patients}" method="post">
               <div class="field full">
                 <label for="fullName">ФИО</label>
                 <input id="fullName" name="fullName" required />
@@ -43,7 +43,7 @@
         <section class="panel span-7">
           <div class="panel-header"><h2>Запись на прием</h2></div>
           <div class="panel-body stack">
-            <form class="fields" th:action="@{/ui/registry}" method="get">
+            <form class="fields" th:action="@{/internal/registry}" method="get">
               <div class="field">
                 <label for="doctorIdFilter">Врач</label>
                 <select id="doctorIdFilter" name="doctorId" onchange="this.form.submit()">
@@ -58,7 +58,7 @@
               </div>
             </form>
 
-            <form class="fields" th:if="${selectedDoctorId != null}" th:action="@{/ui/registry/appointments}" method="post">
+            <form class="fields" th:if="${selectedDoctorId != null}" th:action="@{/internal/registry/appointments}" method="post">
               <input type="hidden" name="doctorId" th:value="${selectedDoctorId}" />
               <div class="field">
                 <label for="patientId">Пациент</label>

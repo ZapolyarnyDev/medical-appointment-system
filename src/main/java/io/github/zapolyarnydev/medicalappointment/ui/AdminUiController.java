@@ -26,7 +26,7 @@ public class AdminUiController {
   private final AppointmentRepository appointmentRepository;
   private final UiSupport uiSupport;
 
-  @GetMapping("/ui/admin")
+  @GetMapping("/admin")
   public String admin(
       @RequestParam(required = false) Long doctorId, Model model, Principal principal) {
     uiSupport.addCurrentUser(model, principal);
@@ -42,17 +42,17 @@ public class AdminUiController {
     return "admin";
   }
 
-  @PostMapping("/ui/admin/specializations")
+  @PostMapping("/admin/specializations")
   public String createSpecialization(
       @RequestParam String name,
       @RequestParam(required = false) String description,
       RedirectAttributes redirectAttributes) {
     specializationService.createSpecialization(name, blankToNull(description));
     redirectAttributes.addFlashAttribute("success", "Специализация добавлена");
-    return "redirect:/ui/admin";
+    return "redirect:/admin";
   }
 
-  @PostMapping("/ui/admin/doctors")
+  @PostMapping("/admin/doctors")
   public String createDoctor(
       @RequestParam Long specializationId,
       @RequestParam String fullName,
@@ -60,10 +60,10 @@ public class AdminUiController {
       RedirectAttributes redirectAttributes) {
     doctorRepository.create(specializationId, fullName, blankToNull(cabinet));
     redirectAttributes.addFlashAttribute("success", "Врач добавлен");
-    return "redirect:/ui/admin";
+    return "redirect:/admin";
   }
 
-  @PostMapping("/ui/admin/slots")
+  @PostMapping("/admin/slots")
   public String createSlot(
       @RequestParam Long doctorId,
       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -71,10 +71,10 @@ public class AdminUiController {
       RedirectAttributes redirectAttributes) {
     scheduleService.createSlot(doctorId, startTime, durationMinutes);
     redirectAttributes.addFlashAttribute("success", "Слот расписания добавлен");
-    return "redirect:/ui/admin?doctorId=" + doctorId;
+    return "redirect:/admin?doctorId=" + doctorId;
   }
 
-  @PostMapping("/ui/admin/appointments/status")
+  @PostMapping("/admin/appointments/status")
   public String updateAppointmentStatus(
       @RequestParam Long appointmentId,
       @RequestParam AppointmentStatus status,
@@ -82,7 +82,7 @@ public class AdminUiController {
       RedirectAttributes redirectAttributes) {
     appointmentRepository.updateStatus(appointmentId, status, blankToNull(cancelReason));
     redirectAttributes.addFlashAttribute("success", "Статус записи обновлен");
-    return "redirect:/ui/admin";
+    return "redirect:/admin";
   }
 
   private String blankToNull(String value) {

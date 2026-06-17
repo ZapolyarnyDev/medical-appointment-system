@@ -87,4 +87,37 @@ public final class JooqTables {
       return DSL.field(DSL.name("appointments", name), type);
     }
   }
+
+  public static final class PatientAccounts {
+    public static final Table<?> TABLE = DSL.table(DSL.name("patient_accounts"));
+    public static final Field<Long> ID = field("id", Long.class);
+    public static final Field<String> KEYCLOAK_SUBJECT = field("keycloak_subject", String.class);
+    public static final Field<String> USERNAME = field("username", String.class);
+    public static final Field<Long> PATIENT_ID = field("patient_id", Long.class);
+    public static final Field<Boolean> ACTIVE = field("active", Boolean.class);
+    public static final Field<LocalDateTime> CREATED_AT = field("created_at", LocalDateTime.class);
+
+    private PatientAccounts() {}
+
+    private static <T> Field<T> field(String name, Class<T> type) {
+      return DSL.field(DSL.name("patient_accounts", name), type);
+    }
+  }
+
+  public static final class StaffAccounts {
+    public static final Table<?> TABLE = DSL.table(DSL.name("staff_accounts"));
+    public static final Field<Long> ID = field("id", Long.class);
+    public static final Field<String> KEYCLOAK_SUBJECT = field("keycloak_subject", String.class);
+    public static final Field<String> USERNAME = field("username", String.class);
+    public static final Field<String> ROLE = field("role", String.class);
+    public static final Field<Long> DOCTOR_ID = field("doctor_id", Long.class);
+    public static final Field<Boolean> ACTIVE = field("active", Boolean.class);
+    public static final Field<LocalDateTime> CREATED_AT = field("created_at", LocalDateTime.class);
+
+    private StaffAccounts() {}
+
+    private static <T> Field<T> field(String name, Class<T> type) {
+      return DSL.field(DSL.name("staff_accounts", name), type);
+    }
+  }
 }

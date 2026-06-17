@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 @Configuration
 @EnableConfigurationProperties(SecurityProperties.class)
@@ -32,12 +33,12 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             authorization -> {
               authorization.requestMatchers("/api/health").permitAll();
-              authorization.requestMatchers("/", "/ui", "/ui/catalog/**", "/css/**").permitAll();
+              authorization.requestMatchers("/", "/booking/**", "/css/**").permitAll();
+              authorization.requestMatchers("/account/**").hasRole(PATIENT);
               authorization
-                  .requestMatchers("/ui/appointments/**")
-                  .hasAnyRole(PATIENT, REGISTRAR, CHIEF_DOCTOR);
-              authorization.requestMatchers("/ui/registry/**").hasAnyRole(REGISTRAR, CHIEF_DOCTOR);
-              authorization.requestMatchers("/ui/admin/**").hasRole(CHIEF_DOCTOR);
+                  .requestMatchers("/internal/registry/**", "/internal/appointments/**")
+                  .hasAnyRole(REGISTRAR, CHIEF_DOCTOR);
+              authorization.requestMatchers("/admin/**").hasRole(CHIEF_DOCTOR);
 
               if (securityProperties.publicDocsEnabled()) {
                 authorization.requestMatchers(OPENAPI_ENDPOINTS).permitAll();
@@ -47,9 +48,9 @@ public class SecurityConfig {
                   .requestMatchers("/api/specializations/**", "/api/doctors/*/slots/available")
                   .hasAnyRole(PATIENT, REGISTRAR, CHIEF_DOCTOR)
                   .requestMatchers("/api/appointments/book")
-                  .hasAnyRole(PATIENT, REGISTRAR)
+                  .hasAnyRole(REGISTRAR, CHIEF_DOCTOR)
                   .requestMatchers("/api/appointments/patients/**")
-                  .hasAnyRole(PATIENT, REGISTRAR, CHIEF_DOCTOR)
+                  .hasAnyRole(REGISTRAR, CHIEF_DOCTOR)
                   .anyRequest()
                   .authenticated();
             })
@@ -63,7 +64,10 @@ public class SecurityConfig {
             exceptions ->
                 exceptions.defaultAuthenticationEntryPointFor(
                     new LoginUrlAuthenticationEntryPoint("/oauth2/authorization/keycloak"),
-                    PathPatternRequestMatcher.pathPattern("/ui/**")))
+                    new OrRequestMatcher(
+                        PathPatternRequestMatcher.pathPattern("/account/**"),
+                        PathPatternRequestMatcher.pathPattern("/internal/**"),
+                        PathPatternRequestMatcher.pathPattern("/admin/**"))))
         .build();
   }
 

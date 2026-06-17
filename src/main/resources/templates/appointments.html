@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Записи</title>
+    <title>Внутренние записи</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
   </head>
   <body>
     <header th:replace="~{fragments :: topbar}"></header>
     <main class="page">
-      <div class="page-title"><h1>Записи пациентов</h1></div>
+      <div class="page-title"><h1>Внутренний список записей</h1></div>
       <div th:replace="~{fragments :: notices}"></div>
 
       <section class="panel">
@@ -17,7 +17,7 @@
           <h2>Фильтр</h2>
         </div>
         <div class="panel-body">
-          <form class="fields" th:action="@{/ui/appointments}" method="get">
+          <form class="fields" th:action="@{/internal/appointments}" method="get">
             <div class="field">
               <label for="patientId">Пациент</label>
               <select id="patientId" name="patientId">

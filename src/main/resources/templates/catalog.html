@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Каталог</title>
+    <title>Запись на прием</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
   </head>
   <body>
     <header th:replace="~{fragments :: topbar}"></header>
     <main class="page">
       <div class="page-title">
-        <h1>Каталог врачей</h1>
-        <a class="button" th:href="@{/ui/appointments}" th:if="${authenticated}">Мои записи</a>
+        <h1>Запись на прием</h1>
+        <a class="button" th:href="@{/internal/registry}" th:if="${registrar}">Открыть регистратуру</a>
       </div>
       <div th:replace="~{fragments :: notices}"></div>
 
@@ -19,7 +19,7 @@
         <section class="panel span-4">
           <div class="panel-header"><h2>Специализация</h2></div>
           <div class="panel-body">
-            <form class="stack" th:action="@{/ui/catalog}" method="get">
+            <form class="stack" th:action="@{/booking}" method="get">
               <div class="field">
                 <label for="specializationId">Направление</label>
                 <select id="specializationId" name="specializationId" onchange="this.form.submit()">
@@ -52,7 +52,7 @@
                 <td th:text="${doctor.fullName}"></td>
                 <td th:text="${doctor.cabinet ?: '-'}"></td>
                 <td>
-                  <a class="button" th:href="@{/ui/catalog(doctorId=${doctor.id},specializationId=${selectedSpecializationId})}">
+                  <a class="button" th:href="@{/booking(doctorId=${doctor.id},specializationId=${selectedSpecializationId})}">
                     Слоты
                   </a>
                 </td>
@@ -72,7 +72,6 @@
               <tr>
                 <th>Начало</th>
                 <th>Окончание</th>
-                <th>Пациент</th>
                 <th></th>
               </tr>
             </thead>
@@ -81,21 +80,13 @@
                 <td th:text="${#temporals.format(slot.startTime, 'dd.MM.yyyy HH:mm')}"></td>
                 <td th:text="${#temporals.format(slot.endTime, 'HH:mm')}"></td>
                 <td>
-                  <form th:if="${authenticated}" th:id="'book-' + ${slot.id}" th:action="@{/ui/appointments/book}" method="post">
-                    <input type="hidden" name="doctorId" th:value="${selectedDoctorId}" />
-                    <input type="hidden" name="slotId" th:value="${slot.id}" />
-                    <select name="patientId" required>
-                      <option value="">Выберите пациента</option>
-                      <option th:each="patient : ${patients}" th:value="${patient.id}" th:text="${patient.fullName}"></option>
-                    </select>
-                  </form>
-                  <span th:if="${!authenticated}" class="muted">Требуется вход</span>
-                </td>
-                <td>
-                  <button th:if="${authenticated}" class="button primary" type="submit" th:form="'book-' + ${slot.id}">
-                    Записать
-                  </button>
-                  <a th:if="${!authenticated}" class="button" th:href="@{/oauth2/authorization/keycloak}">Войти</a>
+                  <a class="button primary" th:href="@{/oauth2/authorization/keycloak}" th:if="${!authenticated}">
+                    Войти для записи
+                  </a>
+                  <a class="button primary" th:href="@{/internal/registry(doctorId=${selectedDoctorId})}" th:if="${registrar}">
+                    Записать пациента
+                  </a>
+                  <span class="muted" th:if="${authenticated and !registrar}">Запись через кабинет пациента будет доступна после привязки профиля</span>
                 </td>
               </tr>
             </tbody>

@@ -4,10 +4,12 @@
     <header th:fragment="topbar" class="topbar">
       <div class="brand">Система записи на прием</div>
       <nav class="nav">
-        <a th:href="@{/ui/catalog}">Каталог</a>
-        <a th:href="@{/ui/appointments}" th:if="${authenticated}">Записи</a>
-        <a th:href="@{/ui/registry}" th:if="${registrar}">Регистратура</a>
-        <a th:href="@{/ui/admin}" th:if="${chiefDoctor}">Администрирование</a>
+        <a th:href="@{/}">Главная</a>
+        <a th:href="@{/booking}">Запись</a>
+        <a th:href="@{/account}" th:if="${authenticated}">Кабинет</a>
+        <a th:href="@{/internal/registry}" th:if="${registrar}">Регистратура</a>
+        <a th:href="@{/internal/appointments}" th:if="${registrar}">Записи</a>
+        <a th:href="@{/admin}" th:if="${chiefDoctor}">Администрирование</a>
       </nav>
       <div class="nav">
         <span class="user" th:if="${authenticated}" th:text="${username}">user</span>

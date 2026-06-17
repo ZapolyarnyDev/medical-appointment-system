@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Система записи на прием</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+  </head>
+  <body>
+    <header th:replace="~{fragments :: topbar}"></header>
+    <main class="page">
+      <section class="panel">
+        <div class="panel-body">
+          <div class="page-title">
+            <div>
+              <h1>Запись к врачу без звонка в регистратуру</h1>
+              <p class="muted">
+                Выберите направление, врача и удобное время приема. Внутренние рабочие места
+                сотрудников вынесены в отдельный защищенный раздел.
+              </p>
+            </div>
+            <div class="actions">
+              <a class="button primary" th:href="@{/booking}">Записаться</a>
+              <a class="button" th:href="@{/internal/registry}" th:if="${registrar}">Регистратура</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top: 16px">
+        <div class="panel-header"><h2>Направления</h2></div>
+        <div th:if="${#lists.isEmpty(specializations)}" class="empty">
+          Направления пока не добавлены
+        </div>
+        <table th:if="${!#lists.isEmpty(specializations)}">
+          <thead>
+            <tr>
+              <th>Название</th>
+              <th>Описание</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="specialization : ${specializations}">
+              <td th:text="${specialization.name}"></td>
+              <td th:text="${specialization.description ?: '-'}"></td>
+              <td>
+                <a class="button" th:href="@{/booking(specializationId=${specialization.id})}">
+                  Выбрать
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>

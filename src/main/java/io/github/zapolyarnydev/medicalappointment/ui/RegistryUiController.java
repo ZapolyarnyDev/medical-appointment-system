@@ -30,7 +30,7 @@ public class RegistryUiController {
   private final AppointmentQueryService appointmentQueryService;
   private final UiSupport uiSupport;
 
-  @GetMapping("/ui/registry")
+  @GetMapping("/internal/registry")
   public String registry(
       @RequestParam(required = false) Long doctorId, Model model, Principal principal) {
     uiSupport.addCurrentUser(model, principal);
@@ -46,7 +46,7 @@ public class RegistryUiController {
     return "registry";
   }
 
-  @PostMapping("/ui/registry/patients")
+  @PostMapping("/internal/registry/patients")
   public String createPatient(
       @RequestParam String fullName,
       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate birthDate,
@@ -55,10 +55,10 @@ public class RegistryUiController {
       RedirectAttributes redirectAttributes) {
     patientRepository.create(fullName, birthDate, phone, blankToNull(policyNumber));
     redirectAttributes.addFlashAttribute("success", "Пациент добавлен");
-    return "redirect:/ui/registry";
+    return "redirect:/internal/registry";
   }
 
-  @PostMapping("/ui/registry/appointments")
+  @PostMapping("/internal/registry/appointments")
   public String bookAppointment(
       @RequestParam Long doctorId,
       @RequestParam Long patientId,
@@ -69,7 +69,7 @@ public class RegistryUiController {
             new BookAppointmentCommand(doctorId, patientId, slotId, AppointmentSource.REGISTRY));
     redirectAttributes.addFlashAttribute(
         result.available() ? "success" : "error", result.message());
-    return "redirect:/ui/registry?doctorId=" + doctorId;
+    return "redirect:/internal/registry?doctorId=" + doctorId;
   }
 
   private String blankToNull(String value) {
