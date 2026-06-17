@@ -82,6 +82,102 @@
           </div>
         </section>
 
+        <section class="panel span-6">
+          <div class="panel-header"><h2>Привязка пациента</h2></div>
+          <div class="panel-body">
+            <form class="stack" th:action="@{/admin/identity/patients}" method="post">
+              <div class="field">
+                <label for="patientUsername">Keycloak username</label>
+                <input id="patientUsername" name="username" required />
+              </div>
+              <div class="field">
+                <label for="patientSubject">Keycloak subject</label>
+                <input id="patientSubject" name="keycloakSubject" />
+              </div>
+              <div class="field">
+                <label for="linkedPatientId">Пациент</label>
+                <select id="linkedPatientId" name="patientId" required>
+                  <option value="">Выберите</option>
+                  <option th:each="patient : ${patients}" th:value="${patient.id}" th:text="${patient.fullName}"></option>
+                </select>
+              </div>
+              <button class="button primary" type="submit">Привязать</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel span-6">
+          <div class="panel-header"><h2>Привязка сотрудника</h2></div>
+          <div class="panel-body">
+            <form class="stack" th:action="@{/admin/identity/staff}" method="post">
+              <div class="field">
+                <label for="staffUsername">Keycloak username</label>
+                <input id="staffUsername" name="username" required />
+              </div>
+              <div class="field">
+                <label for="staffSubject">Keycloak subject</label>
+                <input id="staffSubject" name="keycloakSubject" />
+              </div>
+              <div class="field">
+                <label for="staffRole">Роль</label>
+                <select id="staffRole" name="role" required>
+                  <option th:each="role : ${staffRoles}" th:value="${role}" th:text="${role}"></option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="staffDoctorId">Карточка врача</label>
+                <select id="staffDoctorId" name="doctorId">
+                  <option value="">Не требуется</option>
+                  <option th:each="doctor : ${doctors}" th:value="${doctor.id}" th:text="${doctor.fullName}"></option>
+                </select>
+              </div>
+              <button class="button primary" type="submit">Привязать</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel span-6">
+          <div class="panel-header"><h2>Пациентские учетные записи</h2></div>
+          <div th:if="${#lists.isEmpty(patientAccounts)}" class="empty">Привязок нет</div>
+          <table th:if="${!#lists.isEmpty(patientAccounts)}">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Пациент</th>
+                <th>Активна</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="account : ${patientAccounts}">
+                <td th:text="${account.username}"></td>
+                <td th:text="'#' + ${account.patientId}"></td>
+                <td><span class="pill" th:text="${account.active ? 'Да' : 'Нет'}"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel span-6">
+          <div class="panel-header"><h2>Учетные записи сотрудников</h2></div>
+          <div th:if="${#lists.isEmpty(staffAccounts)}" class="empty">Привязок нет</div>
+          <table th:if="${!#lists.isEmpty(staffAccounts)}">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Роль</th>
+                <th>Врач</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="account : ${staffAccounts}">
+                <td th:text="${account.username}"></td>
+                <td><span class="pill" th:text="${account.role}"></span></td>
+                <td th:text="${account.doctorId == null ? '-' : '#' + account.doctorId}"></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
         <section class="panel span-5">
           <div class="panel-header"><h2>Врачи</h2></div>
           <div th:if="${#lists.isEmpty(doctors)}" class="empty">Врачей нет</div>

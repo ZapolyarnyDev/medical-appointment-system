@@ -3,11 +3,16 @@ package io.github.zapolyarnydev.medicalappointment.ui;
 import io.github.zapolyarnydev.medicalappointment.appointment.AppointmentRepository;
 import io.github.zapolyarnydev.medicalappointment.appointment.AppointmentStatus;
 import io.github.zapolyarnydev.medicalappointment.doctor.DoctorRepository;
+import io.github.zapolyarnydev.medicalappointment.identity.PatientAccountRepository;
+import io.github.zapolyarnydev.medicalappointment.identity.StaffAccountRepository;
+import io.github.zapolyarnydev.medicalappointment.identity.StaffRole;
+import io.github.zapolyarnydev.medicalappointment.patient.PatientRepository;
 import io.github.zapolyarnydev.medicalappointment.schedule.ScheduleService;
 import io.github.zapolyarnydev.medicalappointment.specialization.SpecializationService;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +27,9 @@ public class AdminUiController {
 
   private final SpecializationService specializationService;
   private final DoctorRepository doctorRepository;
+  private final PatientRepository patientRepository;
+  private final PatientAccountRepository patientAccountRepository;
+  private final StaffAccountRepository staffAccountRepository;
   private final ScheduleService scheduleService;
   private final AppointmentRepository appointmentRepository;
   private final UiSupport uiSupport;
@@ -32,6 +40,10 @@ public class AdminUiController {
     uiSupport.addCurrentUser(model, principal);
     model.addAttribute("specializations", specializationService.findSpecializations());
     model.addAttribute("doctors", doctorRepository.findAll());
+    model.addAttribute("patients", patientRepository.findAll());
+    model.addAttribute("patientAccounts", patientAccountRepository.findAll());
+    model.addAttribute("staffAccounts", staffAccountRepository.findAll());
+    model.addAttribute("staffRoles", StaffRole.values());
     model.addAttribute("selectedDoctorId", doctorId);
     model.addAttribute("appointments", appointmentRepository.findDetails());
 
@@ -40,6 +52,42 @@ public class AdminUiController {
     }
 
     return "admin";
+  }
+
+  @PostMapping("/admin/identity/patients")
+  public String createPatientAccount(
+      @RequestParam String username,
+      @RequestParam(required = false) String keycloakSubject,
+      @RequestParam Long patientId,
+      RedirectAttributes redirectAttributes) {
+    try {
+      patientAccountRepository.create(username.trim(), blankToNull(keycloakSubject), patientId);
+      redirectAttributes.addFlashAttribute("success", "Пациентская учетная запись привязана");
+    } catch (DataAccessException exception) {
+      redirectAttributes.addFlashAttribute("error", "Не удалось создать привязку пациента");
+    }
+    return "redirect:/admin";
+  }
+
+  @PostMapping("/admin/identity/staff")
+  public String createStaffAccount(
+      @RequestParam String username,
+      @RequestParam(required = false) String keycloakSubject,
+      @RequestParam StaffRole role,
+      @RequestParam(required = false) Long doctorId,
+      RedirectAttributes redirectAttributes) {
+    if (role == StaffRole.DOCTOR && doctorId == null) {
+      redirectAttributes.addFlashAttribute("error", "Для врача нужно выбрать карточку врача");
+      return "redirect:/admin";
+    }
+
+    try {
+      staffAccountRepository.create(username.trim(), blankToNull(keycloakSubject), role, doctorId);
+      redirectAttributes.addFlashAttribute("success", "Учетная запись сотрудника привязана");
+    } catch (DataAccessException exception) {
+      redirectAttributes.addFlashAttribute("error", "Не удалось создать привязку сотрудника");
+    }
+    return "redirect:/admin";
   }
 
   @PostMapping("/admin/specializations")

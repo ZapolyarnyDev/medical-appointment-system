@@ -28,7 +28,7 @@ public class CurrentUserService {
         .or(() -> username(principal).flatMap(staffAccountRepository::findActiveByUsername));
   }
 
-  private Optional<String> username(Principal principal) {
+  public @NotNull Optional<String> username(Principal principal) {
     return principal == null ? Optional.empty() : Optional.of(principal.getName());
   }
 

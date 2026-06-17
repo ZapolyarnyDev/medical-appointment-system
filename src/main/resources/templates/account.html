@@ -15,10 +15,38 @@
       </div>
       <div th:replace="~{fragments :: notices}"></div>
 
+      <section class="panel" th:if="${patientAccountMissing}">
+        <div class="panel-header"><h2>Профиль пациента</h2></div>
+        <div class="panel-body">
+          <form class="fields" th:action="@{/account/profile}" method="post">
+            <div class="field">
+              <label for="fullName">ФИО</label>
+              <input id="fullName" name="fullName" required />
+            </div>
+            <div class="field">
+              <label for="birthDate">Дата рождения</label>
+              <input id="birthDate" name="birthDate" type="date" required />
+            </div>
+            <div class="field">
+              <label for="phone">Телефон</label>
+              <input id="phone" name="phone" required />
+            </div>
+            <div class="field">
+              <label for="policyNumber">Полис</label>
+              <input id="policyNumber" name="policyNumber" />
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button class="button primary" type="submit">Создать профиль</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
       <section class="panel">
         <div class="panel-header"><h2>Мои записи</h2></div>
         <div class="empty" th:if="${patientAccountMissing}">
-          Профиль пациента не привязан к учетной записи. Обратитесь в регистратуру.
+          Создайте профиль пациента, чтобы записываться на прием и видеть свои записи.
         </div>
         <div class="empty" th:if="${!patientAccountMissing and #lists.isEmpty(appointments)}">
           Активных записей пока нет

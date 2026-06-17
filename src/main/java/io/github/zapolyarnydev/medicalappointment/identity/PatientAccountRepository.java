@@ -3,6 +3,7 @@ package io.github.zapolyarnydev.medicalappointment.identity;
 import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqRecordMappers.localDateTime;
 import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqTables.PatientAccounts;
 
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +16,10 @@ import org.springframework.stereotype.Repository;
 public class PatientAccountRepository {
 
   private final DSLContext dsl;
+
+  public @NotNull List<PatientAccount> findAll() {
+    return dsl.selectFrom(PatientAccounts.TABLE).orderBy(PatientAccounts.USERNAME).fetch(this::map);
+  }
 
   public @NotNull Optional<PatientAccount> findActiveByUsername(@NotNull String username) {
     return dsl.selectFrom(PatientAccounts.TABLE)
@@ -35,6 +40,22 @@ public class PatientAccountRepository {
     return dsl.insertInto(PatientAccounts.TABLE)
         .columns(PatientAccounts.USERNAME, PatientAccounts.PATIENT_ID)
         .values(username, patientId)
+        .returningResult(
+            PatientAccounts.ID,
+            PatientAccounts.KEYCLOAK_SUBJECT,
+            PatientAccounts.USERNAME,
+            PatientAccounts.PATIENT_ID,
+            PatientAccounts.ACTIVE,
+            PatientAccounts.CREATED_AT)
+        .fetchOne(this::map);
+  }
+
+  public @NotNull PatientAccount create(
+      @NotNull String username, String keycloakSubject, @NotNull Long patientId) {
+    return dsl.insertInto(PatientAccounts.TABLE)
+        .columns(
+            PatientAccounts.USERNAME, PatientAccounts.KEYCLOAK_SUBJECT, PatientAccounts.PATIENT_ID)
+        .values(username, keycloakSubject, patientId)
         .returningResult(
             PatientAccounts.ID,
             PatientAccounts.KEYCLOAK_SUBJECT,
