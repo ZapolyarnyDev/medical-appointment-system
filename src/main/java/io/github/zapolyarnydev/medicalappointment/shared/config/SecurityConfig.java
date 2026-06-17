@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
@@ -27,7 +28,7 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(
       HttpSecurity http,
       SecurityProperties securityProperties,
-      KeycloakOidcUserService oidcUserService)
+      GrantedAuthoritiesMapper keycloakAuthoritiesMapper)
       throws Exception {
     return http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
@@ -59,7 +60,8 @@ public class SecurityConfig {
                 oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
         .oauth2Login(
             oauth2 ->
-                oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService)))
+                oauth2.userInfoEndpoint(
+                    userInfo -> userInfo.userAuthoritiesMapper(keycloakAuthoritiesMapper)))
         .exceptionHandling(
             exceptions ->
                 exceptions.defaultAuthenticationEntryPointFor(
