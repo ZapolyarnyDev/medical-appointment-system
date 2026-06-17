@@ -82,6 +82,49 @@
           </div>
         </section>
 
+        <section class="panel span-8">
+          <div class="panel-header"><h2>Рабочий день врача</h2></div>
+          <div class="panel-body">
+            <form class="fields" th:action="@{/admin/slots/batch}" method="post">
+              <div class="field">
+                <label for="batchDoctorId">Врач</label>
+                <select id="batchDoctorId" name="doctorId" required>
+                  <option value="">Выберите</option>
+                  <option th:each="doctor : ${doctors}" th:value="${doctor.id}" th:text="${doctor.fullName}"></option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="batchDate">Дата</label>
+                <input id="batchDate" name="date" type="date" required />
+              </div>
+              <div class="field">
+                <label for="workStart">Начало дня</label>
+                <input id="workStart" name="workStart" type="time" value="09:00" required />
+              </div>
+              <div class="field">
+                <label for="workEnd">Конец дня</label>
+                <input id="workEnd" name="workEnd" type="time" value="17:00" required />
+              </div>
+              <div class="field">
+                <label for="batchDurationMinutes">Длительность, мин</label>
+                <input id="batchDurationMinutes" name="durationMinutes" type="number" min="5" step="5" value="30" required />
+              </div>
+              <div class="field">
+                <label for="breakStart">Перерыв с</label>
+                <input id="breakStart" name="breakStart" type="time" value="13:00" />
+              </div>
+              <div class="field">
+                <label for="breakEnd">Перерыв до</label>
+                <input id="breakEnd" name="breakEnd" type="time" value="14:00" />
+              </div>
+              <div class="field">
+                <label>&nbsp;</label>
+                <button class="button primary" type="submit">Создать день</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
         <section class="panel span-6">
           <div class="panel-header"><h2>Привязка пациента</h2></div>
           <div class="panel-body">

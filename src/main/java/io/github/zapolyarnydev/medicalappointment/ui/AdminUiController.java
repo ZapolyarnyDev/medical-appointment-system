@@ -10,7 +10,9 @@ import io.github.zapolyarnydev.medicalappointment.patient.PatientRepository;
 import io.github.zapolyarnydev.medicalappointment.schedule.ScheduleService;
 import io.github.zapolyarnydev.medicalappointment.specialization.SpecializationService;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -119,6 +121,29 @@ public class AdminUiController {
       RedirectAttributes redirectAttributes) {
     scheduleService.createSlot(doctorId, startTime, durationMinutes);
     redirectAttributes.addFlashAttribute("success", "Слот расписания добавлен");
+    return "redirect:/admin?doctorId=" + doctorId;
+  }
+
+  @PostMapping("/admin/slots/batch")
+  public String generateSlots(
+      @RequestParam Long doctorId,
+      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime workStart,
+      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime workEnd,
+      @RequestParam(defaultValue = "30") int durationMinutes,
+      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+          LocalTime breakStart,
+      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+          LocalTime breakEnd,
+      RedirectAttributes redirectAttributes) {
+    int createdSlots =
+        scheduleService.generateSlots(
+            doctorId, date, workStart, workEnd, durationMinutes, breakStart, breakEnd);
+    redirectAttributes.addFlashAttribute(
+        createdSlots == 0 ? "error" : "success",
+        createdSlots == 0
+            ? "Слоты не созданы: проверьте время или повторы"
+            : "Создано слотов: " + createdSlots);
     return "redirect:/admin?doctorId=" + doctorId;
   }
 

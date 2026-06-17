@@ -62,6 +62,23 @@ public class ScheduleSlotRepository {
         .fetchOne(this::map);
   }
 
+  public int createIfAbsent(
+      @NotNull Long doctorId,
+      @NotNull LocalDateTime startTime,
+      @NotNull LocalDateTime endTime,
+      @NotNull SlotStatus status) {
+    return dsl.insertInto(ScheduleSlots.TABLE)
+        .columns(
+            ScheduleSlots.DOCTOR_ID,
+            ScheduleSlots.START_TIME,
+            ScheduleSlots.END_TIME,
+            ScheduleSlots.STATUS)
+        .values(doctorId, startTime, endTime, status.name())
+        .onConflict(ScheduleSlots.DOCTOR_ID, ScheduleSlots.START_TIME)
+        .doNothing()
+        .execute();
+  }
+
   public int updateStatus(@NotNull Long id, @NotNull SlotStatus status) {
     return dsl.update(ScheduleSlots.TABLE)
         .set(ScheduleSlots.STATUS, status.name())
