@@ -9,7 +9,12 @@
   <body>
     <header th:replace="~{fragments :: topbar}"></header>
     <main class="page">
-      <div class="page-title"><h1>Регистратура</h1></div>
+      <div class="page-title">
+        <div>
+          <h1>Регистратура</h1>
+          <p class="muted">Быстрый поиск пациента, подбор врача и запись на свободный слот.</p>
+        </div>
+      </div>
       <div th:replace="~{fragments :: notices}"></div>
 
       <div class="grid">
@@ -27,11 +32,11 @@
               </div>
               <div class="field">
                 <label for="phone">Телефон</label>
-                <input id="phone" name="phone" required />
+                <input id="phone" name="phone" inputmode="tel" placeholder="+7 900 000-00-00" required />
               </div>
               <div class="field full">
                 <label for="policyNumber">Полис</label>
-                <input id="policyNumber" name="policyNumber" />
+                <input id="policyNumber" name="policyNumber" placeholder="Необязательно" />
               </div>
               <div class="field full">
                 <button class="button primary" type="submit">Добавить пациента</button>
@@ -43,7 +48,7 @@
         <section class="panel span-7">
           <div class="panel-header"><h2>Запись на прием</h2></div>
           <div class="panel-body stack">
-            <form class="fields" th:action="@{/internal/registry}" method="get">
+            <form class="fields compact-form" th:action="@{/internal/registry}" method="get">
               <input type="hidden" name="patientId" th:value="${selectedPatientId}" />
               <div class="field">
                 <label for="doctorIdFilter">Врач</label>
@@ -59,7 +64,7 @@
               </div>
             </form>
 
-            <form class="fields" th:action="@{/internal/registry}" method="get">
+            <form class="fields compact-form" th:action="@{/internal/registry}" method="get">
               <input type="hidden" name="doctorId" th:value="${selectedDoctorId}" />
               <div class="field full">
                 <label for="patientQuery">Поиск пациента</label>
@@ -75,6 +80,12 @@
                 <button class="button" type="submit">Найти</button>
               </div>
             </form>
+
+            <div class="summary-strip">
+              <span th:text="${selectedDoctorId == null ? 'Врач не выбран' : 'Врач выбран'}"></span>
+              <span th:text="${selectedPatientId == null ? 'Пациент не выбран' : 'Пациент выбран'}"></span>
+              <span th:text="${slots == null ? 'Слоты появятся после выбора врача' : 'Свободных слотов: ' + #lists.size(slots)}"></span>
+            </div>
 
             <form class="fields" th:if="${selectedDoctorId != null}" th:action="@{/internal/registry/appointments}" method="post">
               <input type="hidden" name="doctorId" th:value="${selectedDoctorId}" />
@@ -102,9 +113,12 @@
                 </select>
               </div>
               <div class="field full">
-                <button class="button primary" type="submit">Записать через регистратуру</button>
+                <button class="button primary" type="submit">Записать пациента</button>
               </div>
             </form>
+            <div class="empty compact" th:if="${selectedDoctorId == null}">
+              Выберите врача, чтобы увидеть свободное время для записи.
+            </div>
           </div>
         </section>
 

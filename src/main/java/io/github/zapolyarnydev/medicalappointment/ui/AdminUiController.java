@@ -8,6 +8,9 @@ import io.github.zapolyarnydev.medicalappointment.identity.StaffAccountRepositor
 import io.github.zapolyarnydev.medicalappointment.identity.StaffRole;
 import io.github.zapolyarnydev.medicalappointment.patient.PatientRepository;
 import io.github.zapolyarnydev.medicalappointment.schedule.ScheduleService;
+import io.github.zapolyarnydev.medicalappointment.shared.config.DeploymentProperties;
+import io.github.zapolyarnydev.medicalappointment.shared.config.IdentityProperties;
+import io.github.zapolyarnydev.medicalappointment.shared.config.SecurityProperties;
 import io.github.zapolyarnydev.medicalappointment.specialization.SpecializationService;
 import java.security.Principal;
 import java.time.LocalDate;
@@ -34,6 +37,9 @@ public class AdminUiController {
   private final StaffAccountRepository staffAccountRepository;
   private final ScheduleService scheduleService;
   private final AppointmentRepository appointmentRepository;
+  private final DeploymentProperties deploymentProperties;
+  private final IdentityProperties identityProperties;
+  private final SecurityProperties securityProperties;
   private final UiSupport uiSupport;
 
   @GetMapping("/admin")
@@ -48,6 +54,9 @@ public class AdminUiController {
     model.addAttribute("staffRoles", StaffRole.values());
     model.addAttribute("selectedDoctorId", doctorId);
     model.addAttribute("appointments", appointmentRepository.findDetails());
+    model.addAttribute("deployment", deploymentProperties);
+    model.addAttribute("identity", identityProperties);
+    model.addAttribute("security", securityProperties);
 
     if (doctorId != null) {
       model.addAttribute("slots", scheduleService.findSlotsByDoctor(doctorId));

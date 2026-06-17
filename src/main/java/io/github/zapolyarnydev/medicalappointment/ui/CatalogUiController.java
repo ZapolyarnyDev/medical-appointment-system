@@ -36,6 +36,11 @@ public class CatalogUiController {
     model.addAttribute("specializations", specializationService.findSpecializations());
     model.addAttribute("selectedSpecializationId", specializationId);
     model.addAttribute("selectedDoctorId", doctorId);
+    if (doctorId != null) {
+      doctorRepository
+          .findById(doctorId)
+          .ifPresent(doctor -> model.addAttribute("selectedDoctor", doctor));
+    }
 
     if (specializationId != null) {
       model.addAttribute(

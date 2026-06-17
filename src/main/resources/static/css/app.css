@@ -95,6 +95,66 @@ a {
     margin-bottom: 20px;
 }
 
+.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 24px;
+    align-items: stretch;
+    padding: 28px;
+    border: 1px solid #dfe5ef;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 62%, #e6f6f2 100%);
+}
+
+.hero h1 {
+    max-width: 760px;
+    font-size: 34px;
+}
+
+.lead {
+    max-width: 760px;
+    color: #4a5568;
+    font-size: 16px;
+    line-height: 1.55;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    color: #0f766e;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.hero-aside {
+    display: grid;
+    align-content: space-between;
+    gap: 18px;
+    padding: 18px;
+    border: 1px solid #cde7df;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.metric {
+    display: block;
+    color: #0f766e;
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.quick-links {
+    display: grid;
+    gap: 8px;
+}
+
+.quick-links a {
+    color: #0f766e;
+    font-weight: 600;
+    text-decoration: none;
+}
+
 h1,
 h2,
 h3 {
@@ -166,6 +226,13 @@ h3 {
     padding: 18px;
 }
 
+.hint {
+    margin: 10px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
 .stack {
     display: grid;
     gap: 12px;
@@ -175,6 +242,10 @@ h3 {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+}
+
+.compact-form {
+    align-items: end;
 }
 
 .field {
@@ -233,6 +304,51 @@ th {
     color: #6b7280;
 }
 
+.empty.compact {
+    padding: 12px;
+    border: 1px dashed #cfd8e6;
+    border-radius: 8px;
+}
+
+.summary-strip {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.summary-strip span {
+    display: inline-flex;
+    min-height: 28px;
+    align-items: center;
+    padding: 0 10px;
+    border: 1px solid #dfe5ef;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #4a5568;
+    font-size: 13px;
+}
+
+.deployment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.deployment-grid div {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid #edf1f7;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.deployment-grid strong {
+    overflow-wrap: anywhere;
+    font-size: 14px;
+}
+
 .notice {
     margin-bottom: 16px;
     padding: 12px 14px;
@@ -285,6 +401,15 @@ th {
         width: min(100vw - 24px, 720px);
     }
 
+    .hero {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+    }
+
     .span-4,
     .span-5,
     .span-6,
@@ -295,6 +420,10 @@ th {
     }
 
     .fields {
+        grid-template-columns: 1fr;
+    }
+
+    .deployment-grid {
         grid-template-columns: 1fr;
     }
 }

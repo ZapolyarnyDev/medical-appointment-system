@@ -10,7 +10,10 @@
     <header th:replace="~{fragments :: topbar}"></header>
     <main class="page">
       <div class="page-title">
-        <h1>Запись на прием</h1>
+        <div>
+          <h1>Запись на прием</h1>
+          <p class="muted">Сначала выберите направление или врача, затем свободное время.</p>
+        </div>
         <a class="button" th:href="@{/internal/registry}" th:if="${registrar}">Открыть регистратуру</a>
       </div>
       <div th:replace="~{fragments :: notices}"></div>
@@ -33,6 +36,7 @@
                 </select>
               </div>
             </form>
+            <p class="hint">Фильтр помогает быстрее найти врача нужного направления.</p>
           </div>
         </section>
 
@@ -64,9 +68,14 @@
         <section class="panel span-12" th:if="${selectedDoctorId != null}">
           <div class="panel-header">
             <h2>Свободные слоты</h2>
-            <span class="pill" th:text="'Врач #' + ${selectedDoctorId}"></span>
+            <span
+              class="pill"
+              th:text="${selectedDoctor != null ? selectedDoctor.fullName : 'Врач #' + selectedDoctorId}"
+            ></span>
           </div>
-          <div th:if="${#lists.isEmpty(slots)}" class="empty">Свободных слотов нет</div>
+          <div th:if="${#lists.isEmpty(slots)}" class="empty">
+            У врача пока нет свободного времени. Попробуйте выбрать другого врача или направление.
+          </div>
           <table th:if="${!#lists.isEmpty(slots)}">
             <thead>
               <tr>

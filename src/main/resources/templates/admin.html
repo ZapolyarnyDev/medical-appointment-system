@@ -9,10 +9,45 @@
   <body>
     <header th:replace="~{fragments :: topbar}"></header>
     <main class="page">
-      <div class="page-title"><h1>Администрирование</h1></div>
+      <div class="page-title">
+        <div>
+          <h1>Администрирование</h1>
+          <p class="muted">Настройки справочников, расписания, привязок пользователей и состояние развертывания.</p>
+        </div>
+      </div>
       <div th:replace="~{fragments :: notices}"></div>
 
       <div class="grid">
+        <section class="panel span-12">
+          <div class="panel-header"><h2>Развертывание</h2></div>
+          <div class="panel-body deployment-grid">
+            <div>
+              <span class="muted">Профиль</span>
+              <strong th:text="${deployment.profile}"></strong>
+            </div>
+            <div>
+              <span class="muted">Идентификация</span>
+              <strong th:text="${identity.mode}"></strong>
+            </div>
+            <div>
+              <span class="muted">Публичный вход</span>
+              <strong th:text="${deployment.endpoints.publicBaseUrl}"></strong>
+            </div>
+            <div>
+              <span class="muted">Внутренний вход</span>
+              <strong th:text="${deployment.endpoints.internalBaseUrl}"></strong>
+            </div>
+            <div>
+              <span class="muted">Авторизация</span>
+              <strong th:text="${deployment.endpoints.authBaseUrl}"></strong>
+            </div>
+            <div>
+              <span class="muted">Документация API</span>
+              <strong th:text="${security.publicDocsEnabled ? 'открыта' : 'закрыта'}"></strong>
+            </div>
+          </div>
+        </section>
+
         <section class="panel span-4">
           <div class="panel-header"><h2>Специализация</h2></div>
           <div class="panel-body">
