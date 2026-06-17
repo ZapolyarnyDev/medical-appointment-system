@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="ChatGPT">
+  <diagram id="doctor-slot-availability" name="Проверка доступности врача">
+    <mxGraphModel dx="1488" dy="818" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;" value="Блок-схема алгоритма проверки доступности врача для записи на выбранный временной слот" vertex="1">
+          <mxGeometry height="40" width="600" x="110" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;fillColor=none;fontSize=14;" value="Начало" vertex="1">
+          <mxGeometry height="50" width="150" x="338" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="input" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;strokeColor=#000000;fillColor=none;fontSize=14;" value="Ввод данных:&lt;div&gt;ID врача,&amp;nbsp;&lt;/div&gt;&lt;div&gt;дата и время слота,&lt;/div&gt;&lt;div&gt;&amp;nbsp;ID пациента&lt;/div&gt;" vertex="1">
+          <mxGeometry height="70" width="247" x="293" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="validate" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=none;fontSize=14;" value="Проверка корректности входных данных" vertex="1">
+          <mxGeometry height="60" width="240" x="293" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="validDecision" parent="1" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=none;fontSize=14;" value="Данные корректны?" vertex="1">
+          <mxGeometry height="90" width="180" x="323" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="findSlot" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=none;fontSize=14;" value="Поиск слота расписания:&lt;div&gt;doctor_id = ID врача&lt;/div&gt;&lt;div&gt;start_time = выбранное время&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="240" x="293" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="calc" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=none;fontSize=14;" value="Вычисление количества записей:&lt;div&gt;N = COUNT(appointments),&lt;/div&gt;&lt;div&gt;где slot_id = найденный слот&lt;/div&gt;&lt;div&gt;и status ≠ &#39;CANCELLED&#39;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="95" width="240" x="293" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="availableDecision" parent="1" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=none;fontSize=14;" value="Слот найден&lt;div&gt;и N = 0?&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="180" x="323" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="outputYes" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;strokeColor=#000000;fillColor=none;fontSize=14;" value="Вывод:&lt;div&gt;врач доступен,&lt;/div&gt;&lt;div&gt;запись разрешена&lt;/div&gt;" vertex="1">
+          <mxGeometry height="70" width="220" x="140" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="outputNo" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;strokeColor=#000000;fillColor=none;fontSize=14;" value="Вывод:&lt;div&gt;врач недоступен,&lt;/div&gt;&lt;div&gt;запись запрещена&lt;/div&gt;" vertex="1">
+          <mxGeometry height="70" width="220" x="465" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="outputInvalid" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;strokeColor=#000000;fillColor=none;fontSize=14;" value="Вывод:&lt;div&gt;ошибка входных данных&lt;/div&gt;" vertex="1">
+          <mxGeometry height="70" width="220" x="570" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="end" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;fillColor=none;fontSize=14;" value="Конец" vertex="1">
+          <mxGeometry height="50" width="150" x="338" y="990" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="start" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;" target="input" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="input" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;" target="validate" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="validate" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;" target="validDecision" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="validDecision" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;" target="findSlot" value="Да">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="validDecision" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;fontSize=14;" target="outputInvalid" value="Нет">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="findSlot" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;" target="calc" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="calc" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;" target="availableDecision" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="availableDecision" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;fontSize=14;" target="outputYes" value="Да">
+          <mxGeometry relative="1" x="0.2638" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="250" y="780" />
+              <mxPoint x="250" y="870" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="availableDecision" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;fontSize=14;" target="outputNo" value="Нет">
+          <mxGeometry relative="1" x="0.2593" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="575" y="780" />
+              <mxPoint x="575" y="870" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="outputYes" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;" target="end" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="965" />
+              <mxPoint x="413" y="965" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="outputNo" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;" target="end" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="575" y="965" />
+              <mxPoint x="413" y="965" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="outputInvalid" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" target="end" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="1015" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

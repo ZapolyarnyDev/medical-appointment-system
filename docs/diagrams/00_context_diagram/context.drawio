@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="ChatGPT">
+  <diagram name="Layered Architecture" id="layered-architecture-medical-appointment">
+    <mxGraphModel dx="3526" dy="2122" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1" value="Архитектурная диаграмма системы онлайн-записи пациентов к врачу" vertex="1">
+          <mxGeometry height="100" width="1220" x="-30" y="-90" as="geometry" />
+        </mxCell>
+        <mxCell id="usersLayer" parent="1" style="swimlane;html=1;startSize=28;horizontal=1;rounded=0;whiteSpace=wrap;fillColor=none;strokeColor=#000000;fontStyle=1;fontSize=14;" value="Пользовательский уровень" vertex="1">
+          <mxGeometry height="100" width="1040" x="65" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="patient" parent="usersLayer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=14;" value="Пациент" vertex="1">
+          <mxGeometry height="35" width="160" x="30" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="doctor" parent="usersLayer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=14;" value="Врач" vertex="1">
+          <mxGeometry height="35" width="160" x="250" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="registrar" parent="usersLayer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=14;" value="Регистратор" vertex="1">
+          <mxGeometry height="35" width="160" x="655" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="chief" parent="usersLayer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=14;" value="Главный врач" vertex="1">
+          <mxGeometry height="35" width="160" x="875" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="presentationLayer" parent="1" style="swimlane;html=1;startSize=28;horizontal=1;rounded=0;whiteSpace=wrap;fillColor=none;strokeColor=#000000;fontStyle=1;fontSize=14;" value="Уровень представления" vertex="1">
+          <mxGeometry height="100" width="1040" x="65" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="web" parent="presentationLayer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=14;" value="Веб-интерфейс / браузер&#xa;Формы записи, расписание, личный кабинет" vertex="1">
+          <mxGeometry height="45" width="360" x="330" y="42" as="geometry" />
+        </mxCell>
+        <mxCell id="swagger" parent="presentationLayer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=14;" value="Swagger UI / OpenAPI&#xa;Документация REST API" vertex="1">
+          <mxGeometry height="45" width="230" x="750" y="42" as="geometry" />
+        </mxCell>
+        <mxCell id="backendLayer" parent="1" style="swimlane;html=1;startSize=28;horizontal=1;rounded=0;whiteSpace=wrap;fillColor=none;strokeColor=#000000;fontStyle=1;fontSize=14;" value="Серверный уровень приложения" vertex="1">
+          <mxGeometry height="190" width="1040" x="65" y="414" as="geometry" />
+        </mxCell>
+        <mxCell id="controllers" parent="backendLayer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=14;" value="REST Controllers&#xa;Приём HTTP-запросов, DTO, валидация" vertex="1">
+          <mxGeometry height="55" width="220" x="60" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="services" parent="backendLayer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=14;" value="Service Layer&#xa;Бизнес-логика записи и проверки слотов" vertex="1">
+          <mxGeometry height="55" width="240" x="410" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="repositories" parent="backendLayer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=14;" value="Repository / MyBatis Mappers&#xa;SQL-запросы и маппинг данных" vertex="1">
+          <mxGeometry height="55" width="220" x="795" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="security" parent="backendLayer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=14;" value="Spring Security Resource Server&#xa;Проверка JWT и ролей доступа" vertex="1">
+          <mxGeometry height="45" width="240" x="410" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="infraLayer" parent="1" style="swimlane;html=1;startSize=28;horizontal=1;rounded=0;whiteSpace=wrap;fillColor=none;strokeColor=#000000;fontStyle=1;fontSize=14;" value="Уровень данных и внешних сервисов" vertex="1">
+          <mxGeometry height="180" width="1040" x="60" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="postgres" parent="infraLayer" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=none;strokeColor=#000000;fontSize=14;" value="PostgreSQL&#xa;Пациенты, врачи, расписание, записи" vertex="1">
+          <mxGeometry height="60" width="240" x="760" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="keycloak" parent="infraLayer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=14;" value="Keycloak&#xa;Пользователи, роли, OAuth2/OIDC" vertex="1">
+          <mxGeometry height="60" width="260" x="370" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="flyway" parent="infraLayer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=14;" value="Flyway&#xa;Миграции схемы БД" vertex="1">
+          <mxGeometry height="60" width="220" x="60" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="e-users-web-1" edge="1" parent="1" source="patient" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;entryX=0.128;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;fontSize=14;" target="web" value="HTTPS">
+          <mxGeometry relative="1" x="-0.2503" y="4" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-users-web-2" edge="1" parent="1" source="doctor" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;entryX=0.25;entryY=0;entryDx=0;entryDy=0;fontSize=14;" target="web" value="HTTPS">
+          <mxGeometry relative="1" x="-0.2951" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-users-web-3" edge="1" parent="1" source="registrar" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;entryX=0.75;entryY=0;entryDx=0;entryDy=0;fontSize=14;" target="web" value="HTTPS">
+          <mxGeometry relative="1" x="-0.3013" y="2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-users-web-4" edge="1" parent="1" source="chief" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;entryX=0.915;entryY=0.029;entryDx=0;entryDy=0;entryPerimeter=0;fontSize=14;" target="web" value="HTTPS">
+          <mxGeometry relative="1" x="-0.1408" y="-1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-web-controller" edge="1" parent="1" source="web" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;fontSize=14;" target="controllers" value="REST/JSON">
+          <mxGeometry relative="1" x="-0.2293" y="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="575" y="350" />
+              <mxPoint x="240" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-swagger-controller" edge="1" parent="1" source="swagger" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;fontSize=14;" target="controllers" value="описание API">
+          <mxGeometry relative="1" x="-0.5079" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="930" y="350" />
+              <mxPoint x="240" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-controller-service" edge="1" parent="1" source="controllers" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;fontSize=14;" target="services" value="вызов методов">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-service-repo" edge="1" parent="1" source="services" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;fontSize=14;" target="repositories" value="операции с данными">
+          <mxGeometry relative="1" x="0.0345" y="2" as="geometry">
+            <mxPoint y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-repo-db" edge="1" parent="1" source="repositories" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;entryX=0.64;entryY=-0.01;entryDx=0;entryDy=0;entryPerimeter=0;fontSize=14;" target="postgres" value="SQL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-security-keycloak" edge="1" parent="1" source="security" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;" target="keycloak" value="проверка JWT / ролей">
+          <mxGeometry relative="1" x="-0.209" y="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="595" y="630" />
+              <mxPoint x="400" y="630" />
+              <mxPoint x="400" y="755" />
+            </Array>
+            <mxPoint x="400" y="770" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-controller-security" edge="1" parent="1" source="controllers" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;fontSize=14;" target="security" value="авторизация">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-flyway-db" edge="1" parent="1" source="flyway" style="endArrow=block;html=1;rounded=0;strokeColor=#000000;fillColor=#000000;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=14;" target="postgres" value="DDL-миграции">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="230" y="820" />
+              <mxPoint x="570" y="820" />
+              <mxPoint x="940" y="820" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1jwbGoOITXse5okdSRfN-1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1" value="&lt;font style=&quot;font-size: 1px;&quot;&gt;.&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="1220" x="-40" y="840" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
