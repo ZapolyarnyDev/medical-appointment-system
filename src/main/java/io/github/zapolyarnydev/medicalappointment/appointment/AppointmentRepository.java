@@ -6,6 +6,7 @@ import static io.github.zapolyarnydev.medicalappointment.shared.persistence.Jooq
 import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqTables.Patients;
 import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqTables.ScheduleSlots;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -84,6 +85,34 @@ public class AppointmentRepository {
         .fetch(this::mapDetails);
   }
 
+  public @NotNull List<AppointmentDetails> findDetailsByDoctorIdFrom(
+      @NotNull Long doctorId, @NotNull LocalDateTime startTime) {
+    return dsl.select(
+            Appointments.ID,
+            Appointments.PATIENT_ID,
+            Appointments.SLOT_ID,
+            Appointments.STATUS,
+            Appointments.SOURCE,
+            Appointments.CREATED_AT,
+            Appointments.CANCEL_REASON,
+            Patients.FULL_NAME,
+            Doctors.FULL_NAME,
+            Doctors.CABINET,
+            ScheduleSlots.START_TIME,
+            ScheduleSlots.END_TIME)
+        .from(Appointments.TABLE)
+        .join(Patients.TABLE)
+        .on(Appointments.PATIENT_ID.eq(Patients.ID))
+        .join(ScheduleSlots.TABLE)
+        .on(Appointments.SLOT_ID.eq(ScheduleSlots.ID))
+        .join(Doctors.TABLE)
+        .on(ScheduleSlots.DOCTOR_ID.eq(Doctors.ID))
+        .where(Doctors.ID.eq(doctorId))
+        .and(ScheduleSlots.START_TIME.ge(startTime))
+        .orderBy(ScheduleSlots.START_TIME)
+        .fetch(this::mapDetails);
+  }
+
   public boolean existsBySlotId(@NotNull Long slotId) {
     return dsl.fetchExists(
         dsl.selectOne()
@@ -115,6 +144,18 @@ public class AppointmentRepository {
         .set(Appointments.STATUS, status.name())
         .set(Appointments.CANCEL_REASON, cancelReason)
         .where(Appointments.ID.eq(id))
+        .execute();
+  }
+
+  public int updateStatusForDoctor(
+      @NotNull Long id, @NotNull Long doctorId, @NotNull AppointmentStatus status) {
+    return dsl.update(Appointments.TABLE)
+        .set(Appointments.STATUS, status.name())
+        .set(Appointments.CANCEL_REASON, (String) null)
+        .from(ScheduleSlots.TABLE)
+        .where(Appointments.SLOT_ID.eq(ScheduleSlots.ID))
+        .and(Appointments.ID.eq(id))
+        .and(ScheduleSlots.DOCTOR_ID.eq(doctorId))
         .execute();
   }
 

@@ -21,6 +21,7 @@ public class SecurityConfig {
   };
 
   private static final String PATIENT = "PATIENT";
+  private static final String DOCTOR = "DOCTOR";
   private static final String REGISTRAR = "REGISTRAR";
   private static final String CHIEF_DOCTOR = "CHIEF_DOCTOR";
 
@@ -36,6 +37,7 @@ public class SecurityConfig {
               authorization.requestMatchers("/api/health").permitAll();
               authorization.requestMatchers("/", "/booking/**", "/css/**").permitAll();
               authorization.requestMatchers("/account/**").hasRole(PATIENT);
+              authorization.requestMatchers("/internal/doctor/**").hasRole(DOCTOR);
               authorization
                   .requestMatchers("/internal/registry/**", "/internal/appointments/**")
                   .hasAnyRole(REGISTRAR, CHIEF_DOCTOR);

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Приемы врача</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+  </head>
+  <body>
+    <header th:replace="~{fragments :: topbar}"></header>
+    <main class="page">
+      <div class="page-title">
+        <h1>Приемы врача</h1>
+        <a class="button" th:href="@{/booking}">Расписание</a>
+      </div>
+      <div th:replace="~{fragments :: notices}"></div>
+
+      <section class="panel" th:if="${doctorAccountMissing}">
+        <div class="panel-header"><h2>Учетная запись не привязана</h2></div>
+        <div class="empty">Обратитесь к главному врачу, чтобы привязать учетную запись к карточке врача.</div>
+      </section>
+
+      <section class="panel" th:if="${!doctorAccountMissing}">
+        <div class="panel-header">
+          <h2 th:text="${doctorCard == null ? 'Мои приемы' : doctorCard.fullName}"></h2>
+          <span class="pill" th:text="${doctorCard == null ? '' : doctorCard.cabinet ?: 'Кабинет не указан'}"></span>
+        </div>
+        <div th:if="${#lists.isEmpty(appointments)}" class="empty">Ближайших приемов нет</div>
+        <table th:if="${!#lists.isEmpty(appointments)}">
+          <thead>
+            <tr>
+              <th>Пациент</th>
+              <th>Время</th>
+              <th>Статус</th>
+              <th>Источник</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="appointment : ${appointments}">
+              <td th:text="${appointment.patientFullName}"></td>
+              <td>
+                <span th:text="${#temporals.format(appointment.startTime, 'dd.MM.yyyy HH:mm')}"></span>
+                <div class="muted" th:text="${#temporals.format(appointment.endTime, 'HH:mm')}"></div>
+              </td>
+              <td><span class="pill" th:text="${labels.appointmentStatus(appointment.status)}"></span></td>
+              <td th:text="${labels.appointmentSource(appointment.source)}"></td>
+              <td>
+                <form
+                  th:if="${appointment.status.name() == 'CREATED'}"
+                  th:action="@{/internal/doctor/appointments/complete}"
+                  method="post"
+                >
+                  <input type="hidden" name="appointmentId" th:value="${appointment.id}" />
+                  <button class="button primary" type="submit">Завершить</button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>

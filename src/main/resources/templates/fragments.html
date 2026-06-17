@@ -7,6 +7,7 @@
         <a th:href="@{/}">Главная</a>
         <a th:href="@{/booking}">Запись</a>
         <a th:href="@{/account}" th:if="${authenticated}">Кабинет</a>
+        <a th:href="@{/internal/doctor}" th:if="${doctor}">Приемы врача</a>
         <a th:href="@{/internal/registry}" th:if="${registrar}">Регистратура</a>
         <a th:href="@{/internal/appointments}" th:if="${registrar}">Записи</a>
         <a th:href="@{/admin}" th:if="${chiefDoctor}">Администрирование</a>

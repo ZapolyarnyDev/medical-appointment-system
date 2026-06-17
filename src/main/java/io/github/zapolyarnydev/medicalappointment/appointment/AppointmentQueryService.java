@@ -1,5 +1,6 @@
 package io.github.zapolyarnydev.medicalappointment.appointment;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -21,5 +22,10 @@ public class AppointmentQueryService {
 
   public @NotNull List<AppointmentDetails> findDetailsByPatientId(@NotNull Long patientId) {
     return appointmentRepository.findDetailsByPatientId(patientId);
+  }
+
+  public @NotNull List<AppointmentDetails> findDetailsByDoctorIdFrom(
+      @NotNull Long doctorId, @NotNull LocalDateTime startTime) {
+    return appointmentRepository.findDetailsByDoctorIdFrom(doctorId, startTime);
   }
 }
