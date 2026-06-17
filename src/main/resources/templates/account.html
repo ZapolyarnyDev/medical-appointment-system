@@ -58,6 +58,7 @@
               <th>Время</th>
               <th>Статус</th>
               <th>Источник</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -69,6 +70,16 @@
               <td th:text="${#temporals.format(appointment.startTime, 'dd.MM.yyyy HH:mm')}"></td>
               <td><span class="pill" th:text="${labels.appointmentStatus(appointment.status)}"></span></td>
               <td th:text="${labels.appointmentSource(appointment.source)}"></td>
+              <td>
+                <form
+                  th:if="${appointment.status.name() == 'CREATED'}"
+                  th:action="@{/account/appointments/cancel}"
+                  method="post"
+                >
+                  <input type="hidden" name="appointmentId" th:value="${appointment.id}" />
+                  <button class="button" type="submit">Отменить</button>
+                </form>
+              </td>
             </tr>
           </tbody>
         </table>

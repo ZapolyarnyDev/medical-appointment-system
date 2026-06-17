@@ -78,6 +78,22 @@ public class AppointmentController {
   }
 
   @Operation(
+      summary = "Cancel current patient's appointment",
+      description = "Cancels an appointment only if it belongs to the authenticated patient.")
+  @ApiResponse(responseCode = "200", description = "Appointment cancelled")
+  @ApiResponse(responseCode = "400", description = "Cancellation rejected")
+  @PostMapping("/my/{appointmentId}/cancel")
+  public @NotNull ResponseEntity<BookAppointmentResponse> cancelCurrentPatientAppointment(
+      @PathVariable Long appointmentId, Principal principal) {
+    BookAppointmentResponse response =
+        BookAppointmentResponse.from(
+            currentPatientAppointmentService.cancel(principal, appointmentId));
+
+    return ResponseEntity.status(response.available() ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+        .body(response);
+  }
+
+  @Operation(
       summary = "Find patient appointments",
       description = "Returns appointments of a patient.")
   @ApiResponse(responseCode = "200", description = "Patient appointments returned")

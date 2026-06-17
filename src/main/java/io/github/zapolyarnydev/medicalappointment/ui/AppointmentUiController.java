@@ -152,6 +152,18 @@ public class AppointmentUiController {
     return "redirect:/account/appointments/confirm?doctorId=" + doctorId + "&slotId=" + slotId;
   }
 
+  @PostMapping("/account/appointments/cancel")
+  public String cancelCurrentPatientAppointment(
+      @RequestParam Long appointmentId,
+      Principal principal,
+      RedirectAttributes redirectAttributes) {
+    BookAppointmentResult result =
+        currentPatientAppointmentService.cancel(principal, appointmentId);
+    redirectAttributes.addFlashAttribute(
+        result.available() ? "success" : "error", result.message());
+    return "redirect:/account";
+  }
+
   private String blankToNull(String value) {
     return value == null || value.isBlank() ? null : value.trim();
   }

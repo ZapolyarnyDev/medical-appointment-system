@@ -13,4 +13,8 @@ public record BookAppointmentResult(
   public static @NotNull BookAppointmentResult created(@NotNull Long appointmentId) {
     return new BookAppointmentResult(true, "Запись успешно создана", appointmentId);
   }
+
+  public static @NotNull BookAppointmentResult cancelled(@NotNull Long appointmentId) {
+    return new BookAppointmentResult(true, "Запись отменена", appointmentId);
+  }
 }
