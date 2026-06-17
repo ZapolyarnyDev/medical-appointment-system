@@ -1,4 +1,42 @@
 services:
+  app:
+    profiles:
+      - app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${APP_IMAGE:-medical-appointment-system:local}
+    container_name: medical-appointment-app
+    environment:
+      SERVER_PORT: 8080
+      PUBLIC_DOCS_ENABLED: ${PUBLIC_DOCS_ENABLED:-true}
+      IDENTITY_MODE: ${IDENTITY_MODE:-LOCAL}
+      APP_PUBLIC_URL: ${APP_PUBLIC_URL:-http://localhost:8080}
+      APP_INTERNAL_URL: ${APP_INTERNAL_URL:-http://localhost:8080}
+      DB_URL: ${DB_URL:-jdbc:postgresql://postgres:5432/medical_appointment}
+      DB_USERNAME: ${DB_USERNAME:-medical_appointment}
+      DB_PASSWORD: ${DB_PASSWORD:-medical_appointment}
+      OAUTH2_ISSUER_URI: ${OAUTH2_ISSUER_URI:-http://localhost:8081/realms/medical-appointment}
+      OAUTH2_PUBLIC_CLIENT_ID: ${OAUTH2_PUBLIC_CLIENT_ID:-medical-appointment-public}
+      OAUTH2_INTERNAL_CLIENT_ID: ${OAUTH2_INTERNAL_CLIENT_ID:-medical-appointment-internal}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    expose:
+      - "8080"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://localhost:8080/api/health | grep -q UP",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
   postgres:
     image: postgres:18-alpine
     container_name: medical-appointment-postgres
