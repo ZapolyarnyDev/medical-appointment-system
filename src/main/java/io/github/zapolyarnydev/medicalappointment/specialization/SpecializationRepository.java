@@ -1,5 +1,6 @@
 package io.github.zapolyarnydev.medicalappointment.specialization;
 
+import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqRecordMappers.localDateTime;
 import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqTables.Specializations;
 
 import java.util.List;
@@ -30,7 +31,11 @@ public class SpecializationRepository {
     return dsl.insertInto(Specializations.TABLE)
         .columns(Specializations.NAME, Specializations.DESCRIPTION)
         .values(name, description)
-        .returning()
+        .returningResult(
+            Specializations.ID,
+            Specializations.NAME,
+            Specializations.DESCRIPTION,
+            Specializations.CREATED_AT)
         .fetchOne(this::map);
   }
 
@@ -39,6 +44,6 @@ public class SpecializationRepository {
         record.get(Specializations.ID),
         record.get(Specializations.NAME),
         record.get(Specializations.DESCRIPTION),
-        record.get(Specializations.CREATED_AT));
+        localDateTime(record, Specializations.CREATED_AT));
   }
 }

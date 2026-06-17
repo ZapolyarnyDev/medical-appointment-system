@@ -1,5 +1,7 @@
 package io.github.zapolyarnydev.medicalappointment.patient;
 
+import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqRecordMappers.localDate;
+import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqRecordMappers.localDateTime;
 import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqTables.Patients;
 
 import java.time.LocalDate;
@@ -32,7 +34,13 @@ public class PatientRepository {
     return dsl.insertInto(Patients.TABLE)
         .columns(Patients.FULL_NAME, Patients.BIRTH_DATE, Patients.PHONE, Patients.POLICY_NUMBER)
         .values(fullName, birthDate, phone, policyNumber)
-        .returning()
+        .returningResult(
+            Patients.ID,
+            Patients.FULL_NAME,
+            Patients.BIRTH_DATE,
+            Patients.PHONE,
+            Patients.POLICY_NUMBER,
+            Patients.CREATED_AT)
         .fetchOne(this::map);
   }
 
@@ -40,9 +48,9 @@ public class PatientRepository {
     return new Patient(
         record.get(Patients.ID),
         record.get(Patients.FULL_NAME),
-        record.get(Patients.BIRTH_DATE),
+        localDate(record, Patients.BIRTH_DATE),
         record.get(Patients.PHONE),
         record.get(Patients.POLICY_NUMBER),
-        record.get(Patients.CREATED_AT));
+        localDateTime(record, Patients.CREATED_AT));
   }
 }

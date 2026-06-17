@@ -1,5 +1,6 @@
 package io.github.zapolyarnydev.medicalappointment.appointment;
 
+import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqRecordMappers.localDateTime;
 import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqTables.Appointments;
 
 import java.util.List;
@@ -43,7 +44,14 @@ public class AppointmentRepository {
         .columns(
             Appointments.PATIENT_ID, Appointments.SLOT_ID, Appointments.STATUS, Appointments.SOURCE)
         .values(patientId, slotId, AppointmentStatus.CREATED.name(), source.name())
-        .returning()
+        .returningResult(
+            Appointments.ID,
+            Appointments.PATIENT_ID,
+            Appointments.SLOT_ID,
+            Appointments.STATUS,
+            Appointments.SOURCE,
+            Appointments.CREATED_AT,
+            Appointments.CANCEL_REASON)
         .fetchOne(this::map);
   }
 
@@ -54,7 +62,7 @@ public class AppointmentRepository {
         record.get(Appointments.SLOT_ID),
         AppointmentStatus.valueOf(record.get(Appointments.STATUS)),
         AppointmentSource.valueOf(record.get(Appointments.SOURCE)),
-        record.get(Appointments.CREATED_AT),
+        localDateTime(record, Appointments.CREATED_AT),
         record.get(Appointments.CANCEL_REASON));
   }
 }

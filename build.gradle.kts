@@ -21,7 +21,7 @@ dependencies {
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.oauth2.resource.server)
     implementation(libs.spring.boot.starter.jooq)
-    implementation(libs.flyway.core)
+    implementation(libs.spring.boot.starter.flyway)
     implementation(libs.flyway.database.postgresql)
     implementation(libs.springdoc.openapi.starter.webmvc.ui)
 
@@ -32,6 +32,11 @@ dependencies {
     runtimeOnly(libs.postgresql)
 
     testImplementation(libs.spring.boot.starter.test)
+    testImplementation(platform(libs.testcontainers.bom))
+    testImplementation(libs.spring.boot.testcontainers)
+    testImplementation(libs.spring.security.test)
+    testImplementation(libs.testcontainers.junit.jupiter)
+    testImplementation(libs.testcontainers.postgresql)
     testCompileOnly(libs.lombok)
     testAnnotationProcessor(libs.lombok)
 }
@@ -44,8 +49,6 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
-    testClassesDirs = sourceSets.test.get().output.classesDirs
-    classpath = sourceSets.test.get().runtimeClasspath
 }
 
 spotless {

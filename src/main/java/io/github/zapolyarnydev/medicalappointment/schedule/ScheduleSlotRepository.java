@@ -1,5 +1,6 @@
 package io.github.zapolyarnydev.medicalappointment.schedule;
 
+import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqRecordMappers.localDateTime;
 import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqTables.ScheduleSlots;
 
 import java.time.LocalDateTime;
@@ -45,7 +46,12 @@ public class ScheduleSlotRepository {
             ScheduleSlots.END_TIME,
             ScheduleSlots.STATUS)
         .values(doctorId, startTime, endTime, status.name())
-        .returning()
+        .returningResult(
+            ScheduleSlots.ID,
+            ScheduleSlots.DOCTOR_ID,
+            ScheduleSlots.START_TIME,
+            ScheduleSlots.END_TIME,
+            ScheduleSlots.STATUS)
         .fetchOne(this::map);
   }
 
@@ -69,8 +75,8 @@ public class ScheduleSlotRepository {
     return new ScheduleSlot(
         record.get(ScheduleSlots.ID),
         record.get(ScheduleSlots.DOCTOR_ID),
-        record.get(ScheduleSlots.START_TIME),
-        record.get(ScheduleSlots.END_TIME),
+        localDateTime(record, ScheduleSlots.START_TIME),
+        localDateTime(record, ScheduleSlots.END_TIME),
         SlotStatus.valueOf(record.get(ScheduleSlots.STATUS)));
   }
 }

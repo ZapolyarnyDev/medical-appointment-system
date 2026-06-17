@@ -1,5 +1,6 @@
 package io.github.zapolyarnydev.medicalappointment.doctor;
 
+import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqRecordMappers.localDateTime;
 import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqTables.Doctors;
 
 import java.util.List;
@@ -37,7 +38,13 @@ public class DoctorRepository {
     return dsl.insertInto(Doctors.TABLE)
         .columns(Doctors.SPECIALIZATION_ID, Doctors.FULL_NAME, Doctors.CABINET)
         .values(specializationId, fullName, cabinet)
-        .returning()
+        .returningResult(
+            Doctors.ID,
+            Doctors.SPECIALIZATION_ID,
+            Doctors.FULL_NAME,
+            Doctors.CABINET,
+            Doctors.ACTIVE,
+            Doctors.CREATED_AT)
         .fetchOne(this::map);
   }
 
@@ -48,6 +55,6 @@ public class DoctorRepository {
         record.get(Doctors.FULL_NAME),
         record.get(Doctors.CABINET),
         Boolean.TRUE.equals(record.get(Doctors.ACTIVE)),
-        record.get(Doctors.CREATED_AT));
+        localDateTime(record, Doctors.CREATED_AT));
   }
 }
