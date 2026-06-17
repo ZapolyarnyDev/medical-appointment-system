@@ -29,8 +29,8 @@
   },
   "clients": [
     {
-      "clientId": "medical-appointment-local",
-      "name": "Локальный клиент системы записи на прием",
+      "clientId": "medical-appointment-public",
+      "name": "Внешний клиент системы записи на прием",
       "enabled": true,
       "protocol": "openid-connect",
       "publicClient": true,
@@ -39,6 +39,45 @@
       "serviceAccountsEnabled": false,
       "redirectUris": [
         "http://localhost:8080/*",
+        "http://localhost:8080/account/*",
+        "http://localhost:8080/booking/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8080"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "protocolMappers": [
+        {
+          "name": "Роли realm",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "medical-appointment-internal",
+      "name": "Внутренний клиент системы записи на прием",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8080/*",
+        "http://localhost:8080/internal/*",
+        "http://localhost:8080/admin/*",
         "http://localhost:8080/swagger-ui/*"
       ],
       "webOrigins": [
