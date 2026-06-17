@@ -1,0 +1,24 @@
+{
+  "mode": "AD",
+  "description": "Шаблон подключения сотрудников из Active Directory через Keycloak.",
+  "userFederation": {
+    "provider": "ldap",
+    "vendor": "ad",
+    "connectionUrl": "ldap://ad.example.local:389",
+    "usersDn": "CN=Users,DC=example,DC=local",
+    "bindDn": "CN=keycloak-reader,CN=Users,DC=example,DC=local",
+    "bindCredentialEnv": "KEYCLOAK_AD_BIND_PASSWORD",
+    "usernameAttribute": "sAMAccountName",
+    "rdnAttribute": "cn",
+    "uuidAttribute": "objectGUID",
+    "userObjectClasses": "person, organizationalPerson, user"
+  },
+  "singleSignOn": {
+    "preferred": "kerberos",
+    "fallback": "ldap-password"
+  },
+  "application": {
+    "publicClientId": "medical-appointment-public",
+    "internalClientId": "medical-appointment-internal"
+  }
+}

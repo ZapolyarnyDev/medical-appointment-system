@@ -1,0 +1,24 @@
+{
+  "mode": "LDAP",
+  "description": "Нейтральный шаблон подключения сотрудников из LDAP-каталога через Keycloak.",
+  "userFederation": {
+    "provider": "ldap",
+    "vendor": "other",
+    "connectionUrl": "ldap://ldap.example.local:389",
+    "usersDn": "ou=users,dc=example,dc=local",
+    "bindDn": "uid=keycloak-reader,ou=system,dc=example,dc=local",
+    "bindCredentialEnv": "KEYCLOAK_LDAP_BIND_PASSWORD",
+    "usernameAttribute": "uid",
+    "rdnAttribute": "uid",
+    "uuidAttribute": "entryUUID",
+    "userObjectClasses": "inetOrgPerson"
+  },
+  "singleSignOn": {
+    "preferred": "ldap-password",
+    "fallback": "none"
+  },
+  "application": {
+    "publicClientId": "medical-appointment-public",
+    "internalClientId": "medical-appointment-internal"
+  }
+}

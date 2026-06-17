@@ -1,0 +1,12 @@
+{
+  "mode": "LOCAL",
+  "description": "Локальные пользователи Keycloak для разработки и демонстрации.",
+  "source": {
+    "type": "keycloak-local-users",
+    "realmFile": "docker/keycloak/realm/medical-appointment-realm.json"
+  },
+  "application": {
+    "publicClientId": "medical-appointment-public",
+    "internalClientId": "medical-appointment-internal"
+  }
+}

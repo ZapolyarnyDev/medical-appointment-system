@@ -1,0 +1,24 @@
+{
+  "mode": "FREEIPA",
+  "description": "Шаблон подключения сотрудников из FreeIPA через Keycloak.",
+  "userFederation": {
+    "provider": "ldap",
+    "vendor": "rhds",
+    "connectionUrl": "ldap://ipa.example.local:389",
+    "usersDn": "cn=users,cn=accounts,dc=example,dc=local",
+    "bindDn": "uid=keycloak-reader,cn=users,cn=accounts,dc=example,dc=local",
+    "bindCredentialEnv": "KEYCLOAK_FREEIPA_BIND_PASSWORD",
+    "usernameAttribute": "uid",
+    "rdnAttribute": "uid",
+    "uuidAttribute": "ipaUniqueID",
+    "userObjectClasses": "inetOrgPerson, organizationalPerson"
+  },
+  "singleSignOn": {
+    "preferred": "kerberos",
+    "fallback": "ldap-password"
+  },
+  "application": {
+    "publicClientId": "medical-appointment-public",
+    "internalClientId": "medical-appointment-internal"
+  }
+}

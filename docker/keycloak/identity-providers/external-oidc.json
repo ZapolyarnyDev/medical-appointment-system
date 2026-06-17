@@ -1,0 +1,15 @@
+{
+  "mode": "EXTERNAL_OIDC",
+  "description": "Шаблон подключения уже существующего поставщика входа через OIDC.",
+  "identityProvider": {
+    "provider": "oidc",
+    "issuer": "https://login.example.org/realms/hospital",
+    "clientId": "medical-appointment-keycloak-broker",
+    "clientSecretEnv": "KEYCLOAK_EXTERNAL_OIDC_CLIENT_SECRET",
+    "userNameClaim": "preferred_username"
+  },
+  "application": {
+    "publicClientId": "medical-appointment-public",
+    "internalClientId": "medical-appointment-internal"
+  }
+}
