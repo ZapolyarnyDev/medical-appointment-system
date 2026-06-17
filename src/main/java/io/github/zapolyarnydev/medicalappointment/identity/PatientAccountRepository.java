@@ -30,6 +30,21 @@ public class PatientAccountRepository {
         .fetchOptional(this::map);
   }
 
+  public @NotNull PatientAccount createForUsername(
+      @NotNull String username, @NotNull Long patientId) {
+    return dsl.insertInto(PatientAccounts.TABLE)
+        .columns(PatientAccounts.USERNAME, PatientAccounts.PATIENT_ID)
+        .values(username, patientId)
+        .returningResult(
+            PatientAccounts.ID,
+            PatientAccounts.KEYCLOAK_SUBJECT,
+            PatientAccounts.USERNAME,
+            PatientAccounts.PATIENT_ID,
+            PatientAccounts.ACTIVE,
+            PatientAccounts.CREATED_AT)
+        .fetchOne(this::map);
+  }
+
   private PatientAccount map(Record record) {
     return new PatientAccount(
         record.get(PatientAccounts.ID),

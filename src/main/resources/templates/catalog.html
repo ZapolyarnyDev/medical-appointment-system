@@ -83,10 +83,15 @@
                   <a class="button primary" th:href="@{/oauth2/authorization/keycloak}" th:if="${!authenticated}">
                     Войти для записи
                   </a>
+                  <form th:if="${patient}" th:action="@{/account/appointments}" method="post">
+                    <input type="hidden" name="doctorId" th:value="${selectedDoctorId}" />
+                    <input type="hidden" name="slotId" th:value="${slot.id}" />
+                    <button class="button primary" type="submit">Записаться</button>
+                  </form>
                   <a class="button primary" th:href="@{/internal/registry(doctorId=${selectedDoctorId})}" th:if="${registrar}">
                     Записать пациента
                   </a>
-                  <span class="muted" th:if="${authenticated and !registrar}">Запись через кабинет пациента будет доступна после привязки профиля</span>
+                  <span class="muted" th:if="${authenticated and !patient and !registrar}">Запись доступна пациентам</span>
                 </td>
               </tr>
             </tbody>

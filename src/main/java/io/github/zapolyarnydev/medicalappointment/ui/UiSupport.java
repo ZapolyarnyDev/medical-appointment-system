@@ -18,6 +18,7 @@ public class UiSupport {
     model.addAttribute("username", principal == null ? null : principal.getName());
     model.addAttribute("authenticated", principal != null);
     model.addAttribute("roles", roles(principal));
+    model.addAttribute("patient", hasAnyRole(principal, "PATIENT"));
     model.addAttribute("registrar", hasAnyRole(principal, "REGISTRAR", "CHIEF_DOCTOR"));
     model.addAttribute("chiefDoctor", hasAnyRole(principal, "CHIEF_DOCTOR"));
     model.addAttribute("labels", this);

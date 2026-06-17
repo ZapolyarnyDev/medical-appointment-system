@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +26,7 @@ public class AppointmentController {
 
   private final AppointmentBookingService appointmentBookingService;
   private final AppointmentQueryService appointmentQueryService;
+  private final CurrentPatientAppointmentService currentPatientAppointmentService;
 
   @Operation(
       summary = "Book an appointment",
@@ -46,6 +48,29 @@ public class AppointmentController {
             appointmentBookingService.book(
                 new BookAppointmentCommand(
                     request.doctorId(), request.patientId(), request.slotId(), request.source())));
+
+    return ResponseEntity.status(response.available() ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST)
+        .body(response);
+  }
+
+  @Operation(
+      summary = "Book an appointment for current patient",
+      description =
+          "Uses the authenticated user's patient account mapping, then validates doctor and slot availability.")
+  @ApiResponse(
+      responseCode = "201",
+      description = "Appointment created",
+      content = @Content(schema = @Schema(implementation = BookAppointmentResponse.class)))
+  @ApiResponse(
+      responseCode = "400",
+      description = "Booking rejected",
+      content = @Content(schema = @Schema(implementation = BookAppointmentResponse.class)))
+  @PostMapping("/my/book")
+  public @NotNull ResponseEntity<BookAppointmentResponse> bookForCurrentPatient(
+      @RequestBody PatientBookAppointmentRequest request, Principal principal) {
+    BookAppointmentResponse response =
+        BookAppointmentResponse.from(
+            currentPatientAppointmentService.book(principal, request.doctorId(), request.slotId()));
 
     return ResponseEntity.status(response.available() ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST)
         .body(response);

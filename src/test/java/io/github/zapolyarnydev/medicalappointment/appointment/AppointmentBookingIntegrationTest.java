@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.github.zapolyarnydev.medicalappointment.doctor.Doctor;
 import io.github.zapolyarnydev.medicalappointment.doctor.DoctorRepository;
+import io.github.zapolyarnydev.medicalappointment.identity.PatientAccountRepository;
 import io.github.zapolyarnydev.medicalappointment.patient.Patient;
 import io.github.zapolyarnydev.medicalappointment.patient.PatientRepository;
 import io.github.zapolyarnydev.medicalappointment.schedule.ScheduleSlot;
@@ -16,12 +17,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 public class AppointmentBookingIntegrationTest extends PostgresIntegrationTest {
 
   @Autowired private AppointmentBookingService appointmentBookingService;
+  @Autowired private CurrentPatientAppointmentService currentPatientAppointmentService;
   @Autowired private AppointmentRepository appointmentRepository;
   @Autowired private DoctorRepository doctorRepository;
+  @Autowired private PatientAccountRepository patientAccountRepository;
   @Autowired private PatientRepository patientRepository;
   @Autowired private ScheduleSlotRepository scheduleSlotRepository;
   @Autowired private SpecializationRepository specializationRepository;
@@ -141,6 +145,36 @@ public class AppointmentBookingIntegrationTest extends PostgresIntegrationTest {
 
     assertThat(first.available()).isTrue();
     assertThat(second).isEqualTo(BookAppointmentResult.rejected("Слот занят"));
+  }
+
+  @Test
+  void booksCurrentPatientAppointmentWithoutPatientIdInRequest() {
+    TestData data = createBookingData(SlotStatus.AVAILABLE, LocalDateTime.now().plusDays(1));
+    patientAccountRepository.createForUsername("patient", data.patient().id());
+
+    BookAppointmentResult result =
+        currentPatientAppointmentService.book(
+            new UsernamePasswordAuthenticationToken("patient", "password"),
+            data.doctor().id(),
+            data.slot().id());
+
+    assertThat(result.available()).isTrue();
+    assertThat(result.appointmentId()).isNotNull();
+    assertThat(appointmentRepository.findByPatientId(data.patient().id())).hasSize(1);
+  }
+
+  @Test
+  void rejectsCurrentPatientBookingWithoutAccountMapping() {
+    TestData data = createBookingData(SlotStatus.AVAILABLE, LocalDateTime.now().plusDays(1));
+
+    BookAppointmentResult result =
+        currentPatientAppointmentService.book(
+            new UsernamePasswordAuthenticationToken("patient", "password"),
+            data.doctor().id(),
+            data.slot().id());
+
+    assertThat(result)
+        .isEqualTo(BookAppointmentResult.rejected("Профиль пациента не привязан к учетной записи"));
   }
 
   private TestData createBookingData(SlotStatus slotStatus, LocalDateTime startTime) {
