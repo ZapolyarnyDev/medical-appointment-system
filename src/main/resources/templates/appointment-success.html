@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Запись создана</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+  </head>
+  <body>
+    <header th:replace="~{fragments :: topbar}"></header>
+    <main class="page">
+      <div class="page-title"><h1>Запись создана</h1></div>
+
+      <section class="panel">
+        <div class="panel-header"><h2>Готово</h2></div>
+        <div class="panel-body">
+          <p>Ваша запись успешно создана.</p>
+          <p class="muted" th:text="'Номер записи: #' + ${appointmentId}"></p>
+          <div class="actions">
+            <a class="button primary" th:href="@{/account}">Открыть кабинет</a>
+            <a class="button" th:href="@{/booking}">Новая запись</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

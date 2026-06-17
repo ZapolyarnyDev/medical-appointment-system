@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Подтверждение записи</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+  </head>
+  <body>
+    <header th:replace="~{fragments :: topbar}"></header>
+    <main class="page">
+      <div class="page-title">
+        <h1>Подтверждение записи</h1>
+        <a class="button" th:href="@{/booking(doctorId=${doctor.id})}">Назад</a>
+      </div>
+      <div th:replace="~{fragments :: notices}"></div>
+
+      <section class="panel">
+        <div class="panel-header"><h2>Детали приема</h2></div>
+        <div class="panel-body">
+          <table>
+            <tbody>
+              <tr>
+                <th>Врач</th>
+                <td th:text="${doctor.fullName}"></td>
+              </tr>
+              <tr>
+                <th>Кабинет</th>
+                <td th:text="${doctor.cabinet ?: '-'}"></td>
+              </tr>
+              <tr>
+                <th>Дата и время</th>
+                <td th:text="${#temporals.format(slot.startTime, 'dd.MM.yyyy HH:mm')}"></td>
+              </tr>
+              <tr>
+                <th>Окончание</th>
+                <td th:text="${#temporals.format(slot.endTime, 'HH:mm')}"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <form
+            class="actions"
+            th:action="@{/account/appointments}"
+            method="post"
+            onsubmit="this.querySelector('button[type=submit]').disabled = true"
+          >
+            <input type="hidden" name="doctorId" th:value="${doctor.id}" />
+            <input type="hidden" name="slotId" th:value="${slot.id}" />
+            <button class="button primary" type="submit">Подтвердить запись</button>
+            <a class="button" th:href="@{/booking(doctorId=${doctor.id})}">Выбрать другое время</a>
+          </form>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

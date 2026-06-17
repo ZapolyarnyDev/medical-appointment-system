@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class AppointmentController {
       content = @Content(schema = @Schema(implementation = BookAppointmentResponse.class)))
   @PostMapping("/book")
   public @NotNull ResponseEntity<BookAppointmentResponse> book(
-      @RequestBody BookAppointmentRequest request) {
+      @Valid @RequestBody BookAppointmentRequest request) {
     BookAppointmentResponse response =
         BookAppointmentResponse.from(
             appointmentBookingService.book(
@@ -67,7 +68,7 @@ public class AppointmentController {
       content = @Content(schema = @Schema(implementation = BookAppointmentResponse.class)))
   @PostMapping("/my/book")
   public @NotNull ResponseEntity<BookAppointmentResponse> bookForCurrentPatient(
-      @RequestBody PatientBookAppointmentRequest request, Principal principal) {
+      @Valid @RequestBody PatientBookAppointmentRequest request, Principal principal) {
     BookAppointmentResponse response =
         BookAppointmentResponse.from(
             currentPatientAppointmentService.book(principal, request.doctorId(), request.slotId()));
