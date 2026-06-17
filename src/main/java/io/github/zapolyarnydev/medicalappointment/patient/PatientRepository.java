@@ -5,6 +5,7 @@ import static io.github.zapolyarnydev.medicalappointment.shared.persistence.Jooq
 import static io.github.zapolyarnydev.medicalappointment.shared.persistence.JooqTables.Patients;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -18,8 +19,16 @@ public class PatientRepository {
 
   private final DSLContext dsl;
 
+  public @NotNull List<Patient> findAll() {
+    return dsl.selectFrom(Patients.TABLE).orderBy(Patients.FULL_NAME).fetch(this::map);
+  }
+
   public @NotNull Optional<Patient> findById(@NotNull Long id) {
     return dsl.selectFrom(Patients.TABLE).where(Patients.ID.eq(id)).fetchOptional(this::map);
+  }
+
+  public @NotNull Optional<Patient> findByPhone(@NotNull String phone) {
+    return dsl.selectFrom(Patients.TABLE).where(Patients.PHONE.eq(phone)).fetchOptional(this::map);
   }
 
   public boolean existsById(@NotNull Long id) {

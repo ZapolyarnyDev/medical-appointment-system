@@ -17,6 +17,10 @@ public class DoctorRepository {
 
   private final DSLContext dsl;
 
+  public @NotNull List<Doctor> findAll() {
+    return dsl.selectFrom(Doctors.TABLE).orderBy(Doctors.FULL_NAME).fetch(this::map);
+  }
+
   public @NotNull List<Doctor> findActiveBySpecializationId(@NotNull Long specializationId) {
     return dsl.selectFrom(Doctors.TABLE)
         .where(Doctors.SPECIALIZATION_ID.eq(specializationId))

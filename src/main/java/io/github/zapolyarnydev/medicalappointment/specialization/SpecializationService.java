@@ -18,6 +18,10 @@ public class SpecializationService {
     return specializationRepository.findAll();
   }
 
+  public @NotNull Specialization createSpecialization(@NotNull String name, String description) {
+    return specializationRepository.create(name, description);
+  }
+
   public @NotNull List<Doctor> findActiveDoctorsBySpecialization(@NotNull Long specializationId) {
     return doctorRepository.findActiveBySpecializationId(specializationId);
   }

@@ -18,6 +18,13 @@ public class ScheduleSlotRepository {
 
   private final DSLContext dsl;
 
+  public @NotNull List<ScheduleSlot> findByDoctorId(@NotNull Long doctorId) {
+    return dsl.selectFrom(ScheduleSlots.TABLE)
+        .where(ScheduleSlots.DOCTOR_ID.eq(doctorId))
+        .orderBy(ScheduleSlots.START_TIME)
+        .fetch(this::map);
+  }
+
   public @NotNull List<ScheduleSlot> findAvailableFutureByDoctorId(
       @NotNull Long doctorId, @NotNull LocalDateTime now) {
     return dsl.selectFrom(ScheduleSlots.TABLE)

@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 @Configuration
 @EnableConfigurationProperties(SecurityProperties.class)
@@ -17,17 +19,25 @@ public class SecurityConfig {
   };
 
   private static final String PATIENT = "PATIENT";
-  private static final String DOCTOR = "DOCTOR";
   private static final String REGISTRAR = "REGISTRAR";
   private static final String CHIEF_DOCTOR = "CHIEF_DOCTOR";
 
   @Bean
   public SecurityFilterChain securityFilterChain(
-      HttpSecurity http, SecurityProperties securityProperties) throws Exception {
+      HttpSecurity http,
+      SecurityProperties securityProperties,
+      KeycloakOidcUserService oidcUserService)
+      throws Exception {
     return http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             authorization -> {
               authorization.requestMatchers("/api/health").permitAll();
+              authorization.requestMatchers("/", "/ui", "/ui/catalog/**", "/css/**").permitAll();
+              authorization
+                  .requestMatchers("/ui/appointments/**")
+                  .hasAnyRole(PATIENT, REGISTRAR, CHIEF_DOCTOR);
+              authorization.requestMatchers("/ui/registry/**").hasAnyRole(REGISTRAR, CHIEF_DOCTOR);
+              authorization.requestMatchers("/ui/admin/**").hasRole(CHIEF_DOCTOR);
 
               if (securityProperties.publicDocsEnabled()) {
                 authorization.requestMatchers(OPENAPI_ENDPOINTS).permitAll();
@@ -46,6 +56,14 @@ public class SecurityConfig {
         .oauth2ResourceServer(
             oauth2 ->
                 oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
+        .oauth2Login(
+            oauth2 ->
+                oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService)))
+        .exceptionHandling(
+            exceptions ->
+                exceptions.defaultAuthenticationEntryPointFor(
+                    new LoginUrlAuthenticationEntryPoint("/oauth2/authorization/keycloak"),
+                    PathPatternRequestMatcher.pathPattern("/ui/**")))
         .build();
   }
 

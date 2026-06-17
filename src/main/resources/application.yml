@@ -16,6 +16,17 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${OAUTH2_ISSUER_URI:http://localhost:8081/realms/medical-appointment}
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${OAUTH2_ISSUER_URI:http://localhost:8081/realms/medical-appointment}
+        registration:
+          keycloak:
+            provider: keycloak
+            client-id: ${OAUTH2_CLIENT_ID:medical-appointment-local}
+            client-authentication-method: none
+            authorization-grant-type: authorization_code
+            scope: openid,profile,email
   jooq:
     sql-dialect: postgres
 

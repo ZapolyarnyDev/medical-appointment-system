@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Каталог</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+  </head>
+  <body>
+    <header th:replace="~{fragments :: topbar}"></header>
+    <main class="page">
+      <div class="page-title">
+        <h1>Каталог врачей</h1>
+        <a class="button" th:href="@{/ui/appointments}" th:if="${authenticated}">Мои записи</a>
+      </div>
+      <div th:replace="~{fragments :: notices}"></div>
+
+      <div class="grid">
+        <section class="panel span-4">
+          <div class="panel-header"><h2>Специализация</h2></div>
+          <div class="panel-body">
+            <form class="stack" th:action="@{/ui/catalog}" method="get">
+              <div class="field">
+                <label for="specializationId">Направление</label>
+                <select id="specializationId" name="specializationId" onchange="this.form.submit()">
+                  <option value="">Все направления</option>
+                  <option
+                    th:each="specialization : ${specializations}"
+                    th:value="${specialization.id}"
+                    th:selected="${specialization.id == selectedSpecializationId}"
+                    th:text="${specialization.name}"
+                  ></option>
+                </select>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel span-8">
+          <div class="panel-header"><h2>Врачи</h2></div>
+          <div th:if="${#lists.isEmpty(doctors)}" class="empty">Врачи не найдены</div>
+          <table th:if="${!#lists.isEmpty(doctors)}">
+            <thead>
+              <tr>
+                <th>ФИО</th>
+                <th>Кабинет</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="doctor : ${doctors}">
+                <td th:text="${doctor.fullName}"></td>
+                <td th:text="${doctor.cabinet ?: '-'}"></td>
+                <td>
+                  <a class="button" th:href="@{/ui/catalog(doctorId=${doctor.id},specializationId=${selectedSpecializationId})}">
+                    Слоты
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel span-12" th:if="${selectedDoctorId != null}">
+          <div class="panel-header">
+            <h2>Свободные слоты</h2>
+            <span class="pill" th:text="'Врач #' + ${selectedDoctorId}"></span>
+          </div>
+          <div th:if="${#lists.isEmpty(slots)}" class="empty">Свободных слотов нет</div>
+          <table th:if="${!#lists.isEmpty(slots)}">
+            <thead>
+              <tr>
+                <th>Начало</th>
+                <th>Окончание</th>
+                <th>Пациент</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="slot : ${slots}">
+                <td th:text="${#temporals.format(slot.startTime, 'dd.MM.yyyy HH:mm')}"></td>
+                <td th:text="${#temporals.format(slot.endTime, 'HH:mm')}"></td>
+                <td>
+                  <form th:if="${authenticated}" th:id="'book-' + ${slot.id}" th:action="@{/ui/appointments/book}" method="post">
+                    <input type="hidden" name="doctorId" th:value="${selectedDoctorId}" />
+                    <input type="hidden" name="slotId" th:value="${slot.id}" />
+                    <select name="patientId" required>
+                      <option value="">Выберите пациента</option>
+                      <option th:each="patient : ${patients}" th:value="${patient.id}" th:text="${patient.fullName}"></option>
+                    </select>
+                  </form>
+                  <span th:if="${!authenticated}" class="muted">Требуется вход</span>
+                </td>
+                <td>
+                  <button th:if="${authenticated}" class="button primary" type="submit" th:form="'book-' + ${slot.id}">
+                    Записать
+                  </button>
+                  <a th:if="${!authenticated}" class="button" th:href="@{/oauth2/authorization/keycloak}">Войти</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

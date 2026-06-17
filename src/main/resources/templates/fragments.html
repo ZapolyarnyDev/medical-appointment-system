@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <header th:fragment="topbar" class="topbar">
+      <div class="brand">Система записи на прием</div>
+      <nav class="nav">
+        <a th:href="@{/ui/catalog}">Каталог</a>
+        <a th:href="@{/ui/appointments}" th:if="${authenticated}">Записи</a>
+        <a th:href="@{/ui/registry}" th:if="${registrar}">Регистратура</a>
+        <a th:href="@{/ui/admin}" th:if="${chiefDoctor}">Администрирование</a>
+      </nav>
+      <div class="nav">
+        <span class="user" th:if="${authenticated}" th:text="${username}">user</span>
+        <a th:if="${!authenticated}" th:href="@{/oauth2/authorization/keycloak}">Войти</a>
+        <form th:if="${authenticated}" th:action="@{/logout}" method="post">
+          <button type="submit">Выйти</button>
+        </form>
+      </div>
+    </header>
+
+    <div th:fragment="notices">
+      <div class="notice success" th:if="${success}" th:text="${success}"></div>
+      <div class="notice error" th:if="${error}" th:text="${error}"></div>
+    </div>
+  </body>
+</html>

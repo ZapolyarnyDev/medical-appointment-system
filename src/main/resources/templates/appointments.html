@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Записи</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+  </head>
+  <body>
+    <header th:replace="~{fragments :: topbar}"></header>
+    <main class="page">
+      <div class="page-title"><h1>Записи пациентов</h1></div>
+      <div th:replace="~{fragments :: notices}"></div>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Фильтр</h2>
+        </div>
+        <div class="panel-body">
+          <form class="fields" th:action="@{/ui/appointments}" method="get">
+            <div class="field">
+              <label for="patientId">Пациент</label>
+              <select id="patientId" name="patientId">
+                <option value="">Все пациенты</option>
+                <option
+                  th:each="patient : ${patients}"
+                  th:value="${patient.id}"
+                  th:selected="${patient.id == selectedPatientId}"
+                  th:text="${patient.fullName}"
+                ></option>
+              </select>
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button class="button primary" type="submit">Показать</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top: 16px">
+        <div class="panel-header"><h2>Список записей</h2></div>
+        <div th:if="${#lists.isEmpty(appointments)}" class="empty">Записей нет</div>
+        <table th:if="${!#lists.isEmpty(appointments)}">
+          <thead>
+            <tr>
+              <th>Пациент</th>
+              <th>Врач</th>
+              <th>Время</th>
+              <th>Статус</th>
+              <th>Источник</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="appointment : ${appointments}">
+              <td th:text="${appointment.patientFullName}"></td>
+              <td>
+                <span th:text="${appointment.doctorFullName}"></span>
+                <div class="muted" th:text="${appointment.cabinet}"></div>
+              </td>
+              <td th:text="${#temporals.format(appointment.startTime, 'dd.MM.yyyy HH:mm')}"></td>
+              <td><span class="pill" th:text="${labels.appointmentStatus(appointment.status)}"></span></td>
+              <td th:text="${labels.appointmentSource(appointment.source)}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>

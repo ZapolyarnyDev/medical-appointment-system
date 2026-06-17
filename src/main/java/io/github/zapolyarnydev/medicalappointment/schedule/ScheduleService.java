@@ -17,4 +17,14 @@ public class ScheduleService {
   public @NotNull List<ScheduleSlot> findAvailableFutureSlotsByDoctor(@NotNull Long doctorId) {
     return scheduleSlotRepository.findAvailableFutureByDoctorId(doctorId, LocalDateTime.now(clock));
   }
+
+  public @NotNull List<ScheduleSlot> findSlotsByDoctor(@NotNull Long doctorId) {
+    return scheduleSlotRepository.findByDoctorId(doctorId);
+  }
+
+  public @NotNull ScheduleSlot createSlot(
+      @NotNull Long doctorId, @NotNull LocalDateTime startTime, int durationMinutes) {
+    return scheduleSlotRepository.create(
+        doctorId, startTime, startTime.plusMinutes(durationMinutes), SlotStatus.AVAILABLE);
+  }
 }

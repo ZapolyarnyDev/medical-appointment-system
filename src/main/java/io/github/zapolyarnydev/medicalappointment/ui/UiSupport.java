@@ -1,0 +1,67 @@
+package io.github.zapolyarnydev.medicalappointment.ui;
+
+import io.github.zapolyarnydev.medicalappointment.appointment.AppointmentSource;
+import io.github.zapolyarnydev.medicalappointment.appointment.AppointmentStatus;
+import io.github.zapolyarnydev.medicalappointment.schedule.SlotStatus;
+import java.security.Principal;
+import java.util.Set;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
+
+@Component
+public class UiSupport {
+
+  public void addCurrentUser(@NotNull Model model, Principal principal) {
+    model.addAttribute("username", principal == null ? null : principal.getName());
+    model.addAttribute("authenticated", principal != null);
+    model.addAttribute("roles", roles(principal));
+    model.addAttribute("registrar", hasAnyRole(principal, "REGISTRAR", "CHIEF_DOCTOR"));
+    model.addAttribute("chiefDoctor", hasAnyRole(principal, "CHIEF_DOCTOR"));
+    model.addAttribute("labels", this);
+  }
+
+  public String appointmentStatus(AppointmentStatus status) {
+    return switch (status) {
+      case CREATED -> "Создана";
+      case CANCELLED -> "Отменена";
+      case COMPLETED -> "Завершена";
+    };
+  }
+
+  public String appointmentSource(AppointmentSource source) {
+    return switch (source) {
+      case ONLINE -> "Онлайн";
+      case REGISTRY -> "Регистратура";
+    };
+  }
+
+  public String slotStatus(SlotStatus status) {
+    return switch (status) {
+      case AVAILABLE -> "Свободен";
+      case BOOKED -> "Занят";
+    };
+  }
+
+  private boolean hasAnyRole(Principal principal, String... roles) {
+    Set<String> authorities = roles(principal);
+    for (String role : roles) {
+      if (authorities.contains("ROLE_" + role)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private Set<String> roles(Principal principal) {
+    if (!(principal instanceof Authentication authentication)) {
+      return Set.of();
+    }
+
+    return authentication.getAuthorities().stream()
+        .map(GrantedAuthority::getAuthority)
+        .collect(java.util.stream.Collectors.toSet());
+  }
+}

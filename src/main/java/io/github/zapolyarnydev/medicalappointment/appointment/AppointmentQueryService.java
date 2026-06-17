@@ -14,4 +14,12 @@ public class AppointmentQueryService {
   public @NotNull List<Appointment> findByPatientId(@NotNull Long patientId) {
     return appointmentRepository.findByPatientId(patientId);
   }
+
+  public @NotNull List<AppointmentDetails> findDetails() {
+    return appointmentRepository.findDetails();
+  }
+
+  public @NotNull List<AppointmentDetails> findDetailsByPatientId(@NotNull Long patientId) {
+    return appointmentRepository.findDetailsByPatientId(patientId);
+  }
 }

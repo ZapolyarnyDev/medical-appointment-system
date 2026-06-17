@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Регистратура</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+  </head>
+  <body>
+    <header th:replace="~{fragments :: topbar}"></header>
+    <main class="page">
+      <div class="page-title"><h1>Регистратура</h1></div>
+      <div th:replace="~{fragments :: notices}"></div>
+
+      <div class="grid">
+        <section class="panel span-5">
+          <div class="panel-header"><h2>Новый пациент</h2></div>
+          <div class="panel-body">
+            <form class="fields" th:action="@{/ui/registry/patients}" method="post">
+              <div class="field full">
+                <label for="fullName">ФИО</label>
+                <input id="fullName" name="fullName" required />
+              </div>
+              <div class="field">
+                <label for="birthDate">Дата рождения</label>
+                <input id="birthDate" name="birthDate" type="date" required />
+              </div>
+              <div class="field">
+                <label for="phone">Телефон</label>
+                <input id="phone" name="phone" required />
+              </div>
+              <div class="field full">
+                <label for="policyNumber">Полис</label>
+                <input id="policyNumber" name="policyNumber" />
+              </div>
+              <div class="field full">
+                <button class="button primary" type="submit">Добавить пациента</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel span-7">
+          <div class="panel-header"><h2>Запись на прием</h2></div>
+          <div class="panel-body stack">
+            <form class="fields" th:action="@{/ui/registry}" method="get">
+              <div class="field">
+                <label for="doctorIdFilter">Врач</label>
+                <select id="doctorIdFilter" name="doctorId" onchange="this.form.submit()">
+                  <option value="">Выберите врача</option>
+                  <option
+                    th:each="doctor : ${doctors}"
+                    th:value="${doctor.id}"
+                    th:selected="${doctor.id == selectedDoctorId}"
+                    th:text="${doctor.fullName}"
+                  ></option>
+                </select>
+              </div>
+            </form>
+
+            <form class="fields" th:if="${selectedDoctorId != null}" th:action="@{/ui/registry/appointments}" method="post">
+              <input type="hidden" name="doctorId" th:value="${selectedDoctorId}" />
+              <div class="field">
+                <label for="patientId">Пациент</label>
+                <select id="patientId" name="patientId" required>
+                  <option value="">Выберите пациента</option>
+                  <option th:each="patient : ${patients}" th:value="${patient.id}" th:text="${patient.fullName}"></option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="slotId">Слот</label>
+                <select id="slotId" name="slotId" required>
+                  <option value="">Выберите время</option>
+                  <option
+                    th:each="slot : ${slots}"
+                    th:value="${slot.id}"
+                    th:text="${#temporals.format(slot.startTime, 'dd.MM.yyyy HH:mm')}"
+                  ></option>
+                </select>
+              </div>
+              <div class="field full">
+                <button class="button primary" type="submit">Записать через регистратуру</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel span-12">
+          <div class="panel-header"><h2>Последние записи</h2></div>
+          <div th:if="${#lists.isEmpty(appointments)}" class="empty">Записей нет</div>
+          <table th:if="${!#lists.isEmpty(appointments)}">
+            <thead>
+              <tr>
+                <th>Пациент</th>
+                <th>Врач</th>
+                <th>Время</th>
+                <th>Статус</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="appointment : ${appointments}">
+                <td th:text="${appointment.patientFullName}"></td>
+                <td th:text="${appointment.doctorFullName}"></td>
+                <td th:text="${#temporals.format(appointment.startTime, 'dd.MM.yyyy HH:mm')}"></td>
+                <td><span class="pill" th:text="${labels.appointmentStatus(appointment.status)}"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
