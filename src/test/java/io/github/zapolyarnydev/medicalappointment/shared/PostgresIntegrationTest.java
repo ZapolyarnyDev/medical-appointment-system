@@ -38,7 +38,7 @@ public abstract class PostgresIntegrationTest {
   void cleanDatabase() {
     if (tableExists("appointments")) {
       dsl.execute(
-          "TRUNCATE appointments, schedule_slots, patients, doctors, specializations RESTART IDENTITY CASCADE");
+          "TRUNCATE appointments, schedule_slots, patient_accounts, staff_accounts, patients, doctors, specializations RESTART IDENTITY CASCADE");
     }
   }
 
