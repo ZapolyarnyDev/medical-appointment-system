@@ -132,6 +132,7 @@
                 <th>Врач</th>
                 <th>Время</th>
                 <th>Статус</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -140,6 +141,34 @@
                 <td th:text="${appointment.doctorFullName}"></td>
                 <td th:text="${#temporals.format(appointment.startTime, 'dd.MM.yyyy HH:mm')}"></td>
                 <td><span class="pill" th:text="${labels.appointmentStatus(appointment.status)}"></span></td>
+                <td>
+                  <div class="stack" th:if="${appointment.status.name() == 'CREATED'}">
+                    <form class="actions" th:action="@{/internal/registry/appointments/cancel}" method="post">
+                      <input type="hidden" name="appointmentId" th:value="${appointment.id}" />
+                      <input type="hidden" name="doctorId" th:value="${selectedDoctorId}" />
+                      <input name="cancelReason" placeholder="Причина отмены" />
+                      <button class="button danger" type="submit">Отменить</button>
+                    </form>
+                    <form
+                      class="actions"
+                      th:if="${selectedDoctorId != null and !#lists.isEmpty(slots)}"
+                      th:action="@{/internal/registry/appointments/reschedule}"
+                      method="post"
+                    >
+                      <input type="hidden" name="appointmentId" th:value="${appointment.id}" />
+                      <input type="hidden" name="doctorId" th:value="${selectedDoctorId}" />
+                      <select name="slotId" required>
+                        <option value="">Новое время</option>
+                        <option
+                          th:each="slot : ${slots}"
+                          th:value="${slot.id}"
+                          th:text="${#temporals.format(slot.startTime, 'dd.MM.yyyy HH:mm')}"
+                        ></option>
+                      </select>
+                      <button class="button" type="submit">Перенести</button>
+                    </form>
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>

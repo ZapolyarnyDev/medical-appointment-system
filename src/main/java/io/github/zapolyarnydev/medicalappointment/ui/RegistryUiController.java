@@ -1,6 +1,7 @@
 package io.github.zapolyarnydev.medicalappointment.ui;
 
 import io.github.zapolyarnydev.medicalappointment.appointment.AppointmentBookingService;
+import io.github.zapolyarnydev.medicalappointment.appointment.AppointmentManagementService;
 import io.github.zapolyarnydev.medicalappointment.appointment.AppointmentQueryService;
 import io.github.zapolyarnydev.medicalappointment.appointment.AppointmentSource;
 import io.github.zapolyarnydev.medicalappointment.appointment.BookAppointmentCommand;
@@ -28,6 +29,7 @@ public class RegistryUiController {
   private final DoctorRepository doctorRepository;
   private final ScheduleService scheduleService;
   private final AppointmentBookingService appointmentBookingService;
+  private final AppointmentManagementService appointmentManagementService;
   private final AppointmentQueryService appointmentQueryService;
   private final UiSupport uiSupport;
 
@@ -45,7 +47,11 @@ public class RegistryUiController {
             ? patientRepository.findAll()
             : patientRepository.search(patientQuery));
     model.addAttribute("doctors", doctorRepository.findAll());
-    model.addAttribute("appointments", appointmentQueryService.findDetails());
+    model.addAttribute(
+        "appointments",
+        patientId == null
+            ? appointmentQueryService.findDetails()
+            : appointmentQueryService.findDetailsByPatientId(patientId));
     model.addAttribute("selectedDoctorId", doctorId);
     model.addAttribute("selectedPatientId", patientId);
     model.addAttribute("patientQuery", patientQuery);
@@ -88,7 +94,40 @@ public class RegistryUiController {
     return "redirect:/internal/registry?doctorId=" + doctorId;
   }
 
+  @PostMapping("/internal/registry/appointments/cancel")
+  public String cancelAppointment(
+      @RequestParam Long appointmentId,
+      @RequestParam(required = false) String cancelReason,
+      @RequestParam(required = false) Long doctorId,
+      RedirectAttributes redirectAttributes) {
+    BookAppointmentResult result =
+        appointmentManagementService.cancelByRegistry(appointmentId, cancelReason);
+    redirectAttributes.addFlashAttribute(
+        result.available() ? "success" : "error", result.message());
+    return redirectToRegistry(doctorId);
+  }
+
+  @PostMapping("/internal/registry/appointments/reschedule")
+  public String rescheduleAppointment(
+      @RequestParam Long appointmentId,
+      @RequestParam Long doctorId,
+      @RequestParam Long slotId,
+      RedirectAttributes redirectAttributes) {
+    BookAppointmentResult result =
+        appointmentManagementService.rescheduleByRegistry(appointmentId, doctorId, slotId);
+    redirectAttributes.addFlashAttribute(
+        result.available() ? "success" : "error",
+        result.available() ? "Запись перенесена" : result.message());
+    return redirectToRegistry(doctorId);
+  }
+
   private String blankToNull(String value) {
     return value == null || value.isBlank() ? null : value;
+  }
+
+  private String redirectToRegistry(Long doctorId) {
+    return doctorId == null
+        ? "redirect:/internal/registry"
+        : "redirect:/internal/registry?doctorId=" + doctorId;
   }
 }
