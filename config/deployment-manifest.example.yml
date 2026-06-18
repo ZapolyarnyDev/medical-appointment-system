@@ -1,5 +1,14 @@
 deployment:
   profile: hospital-compose
+  organization:
+    name: Система записи на прием
+    publicAddress: Адрес медицинской организации
+    internalAddress: Внутренний контур медицинской организации
+    defaultAppointmentDurationMinutes: 30
+    defaultWorkStart: "09:00"
+    defaultWorkEnd: "17:00"
+    defaultBreakStart: "13:00"
+    defaultBreakEnd: "14:00"
   urls:
     public: http://public.localhost:8080
     internal: http://internal.localhost:8080

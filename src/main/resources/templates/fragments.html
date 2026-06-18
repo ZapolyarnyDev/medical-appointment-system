@@ -2,7 +2,7 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
   <body>
     <header th:fragment="topbar" class="topbar">
-      <div class="brand">Система записи на прием</div>
+      <div class="brand" th:text="${organization.name}">Система записи на прием</div>
       <nav class="nav">
         <a th:href="@{/}">Главная</a>
         <a th:href="@{/booking}">Запись</a>

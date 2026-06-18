@@ -41,6 +41,16 @@ server:
   port: ${SERVER_PORT:8080}
 
 app:
+  organization:
+    name: ${ORGANIZATION_NAME:Система записи на прием}
+    public-address: ${ORGANIZATION_PUBLIC_ADDRESS:Адрес медицинской организации}
+    internal-address: ${ORGANIZATION_INTERNAL_ADDRESS:Внутренний контур медицинской организации}
+    appointments:
+      default-duration-minutes: ${DEFAULT_APPOINTMENT_DURATION_MINUTES:30}
+      default-work-start: ${DEFAULT_WORK_START:09:00}
+      default-work-end: ${DEFAULT_WORK_END:17:00}
+      default-break-start: ${DEFAULT_BREAK_START:13:00}
+      default-break-end: ${DEFAULT_BREAK_END:14:00}
   deployment:
     profile: ${DEPLOYMENT_PROFILE:local}
     endpoints:

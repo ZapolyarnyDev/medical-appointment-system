@@ -3,8 +3,10 @@ package io.github.zapolyarnydev.medicalappointment.ui;
 import io.github.zapolyarnydev.medicalappointment.appointment.AppointmentSource;
 import io.github.zapolyarnydev.medicalappointment.appointment.AppointmentStatus;
 import io.github.zapolyarnydev.medicalappointment.schedule.SlotStatus;
+import io.github.zapolyarnydev.medicalappointment.shared.config.OrganizationProperties;
 import java.security.Principal;
 import java.util.Set;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,9 +14,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
 @Component
+@RequiredArgsConstructor
 public class UiSupport {
 
+  private final OrganizationProperties organizationProperties;
+
   public void addCurrentUser(@NotNull Model model, Principal principal) {
+    model.addAttribute("organization", organizationProperties);
     model.addAttribute("username", principal == null ? null : principal.getName());
     model.addAttribute("authenticated", principal != null);
     model.addAttribute("roles", roles(principal));
