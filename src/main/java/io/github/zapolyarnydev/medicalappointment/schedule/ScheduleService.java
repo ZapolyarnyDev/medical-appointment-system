@@ -26,11 +26,14 @@ public class ScheduleService {
 
   public @NotNull ScheduleSlot createSlot(
       @NotNull Long doctorId, @NotNull LocalDateTime startTime, int durationMinutes) {
+    if (!startTime.isAfter(LocalDateTime.now(clock)) || durationMinutes < 5) {
+      throw new IllegalArgumentException("Время приема должно быть в будущем");
+    }
     return scheduleSlotRepository.create(
         doctorId, startTime, startTime.plusMinutes(durationMinutes), SlotStatus.AVAILABLE);
   }
 
-  public int generateSlots(
+  public @NotNull ScheduleGenerationResult generateSlots(
       @NotNull Long doctorId,
       @NotNull LocalDate date,
       @NotNull LocalTime workStart,
@@ -38,24 +41,36 @@ public class ScheduleService {
       int durationMinutes,
       LocalTime breakStart,
       LocalTime breakEnd) {
+    if (date.isBefore(LocalDate.now(clock))) {
+      return ScheduleGenerationResult.rejected("Нельзя создать расписание в прошлом");
+    }
     if (!workStart.isBefore(workEnd) || durationMinutes < 5) {
-      return 0;
+      return ScheduleGenerationResult.rejected("Проверьте рабочее время и длительность приема");
     }
 
     int createdSlots = 0;
+    int skippedDuplicateSlots = 0;
+    int skippedBreakSlots = 0;
     LocalDateTime cursor = LocalDateTime.of(date, workStart);
     LocalDateTime end = LocalDateTime.of(date, workEnd);
 
     while (!cursor.plusMinutes(durationMinutes).isAfter(end)) {
       LocalDateTime slotEnd = cursor.plusMinutes(durationMinutes);
-      if (!overlapsBreak(cursor.toLocalTime(), slotEnd.toLocalTime(), breakStart, breakEnd)) {
-        createdSlots +=
+      if (overlapsBreak(cursor.toLocalTime(), slotEnd.toLocalTime(), breakStart, breakEnd)) {
+        skippedBreakSlots++;
+      } else {
+        int created =
             scheduleSlotRepository.createIfAbsent(doctorId, cursor, slotEnd, SlotStatus.AVAILABLE);
+        createdSlots += created;
+        if (created == 0) {
+          skippedDuplicateSlots++;
+        }
       }
       cursor = slotEnd;
     }
 
-    return createdSlots;
+    return new ScheduleGenerationResult(
+        createdSlots, skippedDuplicateSlots, skippedBreakSlots, null);
   }
 
   private boolean overlapsBreak(

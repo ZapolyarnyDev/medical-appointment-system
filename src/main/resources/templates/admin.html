@@ -45,6 +45,18 @@
               <span class="muted">Документация API</span>
               <strong th:text="${security.publicDocsEnabled ? 'открыта' : 'закрыта'}"></strong>
             </div>
+            <div>
+              <span class="muted">Организация</span>
+              <strong th:text="${organizationSettings.name}"></strong>
+            </div>
+            <div>
+              <span class="muted">Публичный адрес</span>
+              <strong th:text="${organizationSettings.publicAddress}"></strong>
+            </div>
+            <div>
+              <span class="muted">Внутренний адрес</span>
+              <strong th:text="${organizationSettings.internalAddress}"></strong>
+            </div>
           </div>
         </section>
 
@@ -110,7 +122,15 @@
               </div>
               <div class="field">
                 <label for="durationMinutes">Длительность, мин</label>
-                <input id="durationMinutes" name="durationMinutes" type="number" min="5" step="5" value="30" required />
+                <input
+                  id="durationMinutes"
+                  name="durationMinutes"
+                  type="number"
+                  min="5"
+                  step="5"
+                  th:value="${organizationSettings.appointments.defaultDurationMinutes}"
+                  required
+                />
               </div>
               <button class="button primary" type="submit">Добавить</button>
             </form>
@@ -134,23 +154,53 @@
               </div>
               <div class="field">
                 <label for="workStart">Начало дня</label>
-                <input id="workStart" name="workStart" type="time" value="09:00" required />
+                <input
+                  id="workStart"
+                  name="workStart"
+                  type="time"
+                  th:value="${organizationSettings.appointments.defaultWorkStart}"
+                  required
+                />
               </div>
               <div class="field">
                 <label for="workEnd">Конец дня</label>
-                <input id="workEnd" name="workEnd" type="time" value="17:00" required />
+                <input
+                  id="workEnd"
+                  name="workEnd"
+                  type="time"
+                  th:value="${organizationSettings.appointments.defaultWorkEnd}"
+                  required
+                />
               </div>
               <div class="field">
                 <label for="batchDurationMinutes">Длительность, мин</label>
-                <input id="batchDurationMinutes" name="durationMinutes" type="number" min="5" step="5" value="30" required />
+                <input
+                  id="batchDurationMinutes"
+                  name="durationMinutes"
+                  type="number"
+                  min="5"
+                  step="5"
+                  th:value="${organizationSettings.appointments.defaultDurationMinutes}"
+                  required
+                />
               </div>
               <div class="field">
                 <label for="breakStart">Перерыв с</label>
-                <input id="breakStart" name="breakStart" type="time" value="13:00" />
+                <input
+                  id="breakStart"
+                  name="breakStart"
+                  type="time"
+                  th:value="${organizationSettings.appointments.defaultBreakStart}"
+                />
               </div>
               <div class="field">
                 <label for="breakEnd">Перерыв до</label>
-                <input id="breakEnd" name="breakEnd" type="time" value="14:00" />
+                <input
+                  id="breakEnd"
+                  name="breakEnd"
+                  type="time"
+                  th:value="${organizationSettings.appointments.defaultBreakEnd}"
+                />
               </div>
               <div class="field">
                 <label>&nbsp;</label>
@@ -281,6 +331,15 @@
           <div class="panel-header"><h2>Расписание</h2></div>
           <div th:if="${selectedDoctorId == null}" class="empty">Выберите врача</div>
           <div th:if="${selectedDoctorId != null and #lists.isEmpty(slots)}" class="empty">Слотов нет</div>
+          <div class="panel-body" th:if="${selectedDoctorId != null and !#lists.isEmpty(slots)}">
+            <div class="summary-strip">
+              <span th:text="'Всего слотов: ' + ${#lists.size(slots)}"></span>
+              <span
+                th:text="'Свободно: ' + ${#lists.size(slots.?[status.name() == 'AVAILABLE'])}"
+              ></span>
+              <span th:text="'Занято: ' + ${#lists.size(slots.?[status.name() == 'BOOKED'])}"></span>
+            </div>
+          </div>
           <table th:if="${selectedDoctorId != null and !#lists.isEmpty(slots)}">
             <thead>
               <tr>

@@ -10,6 +10,7 @@ import io.github.zapolyarnydev.medicalappointment.patient.PatientRepository;
 import io.github.zapolyarnydev.medicalappointment.schedule.ScheduleService;
 import io.github.zapolyarnydev.medicalappointment.shared.config.DeploymentProperties;
 import io.github.zapolyarnydev.medicalappointment.shared.config.IdentityProperties;
+import io.github.zapolyarnydev.medicalappointment.shared.config.OrganizationProperties;
 import io.github.zapolyarnydev.medicalappointment.shared.config.SecurityProperties;
 import io.github.zapolyarnydev.medicalappointment.specialization.SpecializationService;
 import java.security.Principal;
@@ -39,6 +40,7 @@ public class AdminUiController {
   private final AppointmentRepository appointmentRepository;
   private final DeploymentProperties deploymentProperties;
   private final IdentityProperties identityProperties;
+  private final OrganizationProperties organizationProperties;
   private final SecurityProperties securityProperties;
   private final UiSupport uiSupport;
 
@@ -56,6 +58,7 @@ public class AdminUiController {
     model.addAttribute("appointments", appointmentRepository.findDetails());
     model.addAttribute("deployment", deploymentProperties);
     model.addAttribute("identity", identityProperties);
+    model.addAttribute("organizationSettings", organizationProperties);
     model.addAttribute("security", securityProperties);
 
     if (doctorId != null) {
@@ -128,8 +131,12 @@ public class AdminUiController {
       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
       @RequestParam(defaultValue = "30") int durationMinutes,
       RedirectAttributes redirectAttributes) {
-    scheduleService.createSlot(doctorId, startTime, durationMinutes);
-    redirectAttributes.addFlashAttribute("success", "Слот расписания добавлен");
+    try {
+      scheduleService.createSlot(doctorId, startTime, durationMinutes);
+      redirectAttributes.addFlashAttribute("success", "Слот расписания добавлен");
+    } catch (IllegalArgumentException exception) {
+      redirectAttributes.addFlashAttribute("error", exception.getMessage());
+    }
     return "redirect:/admin?doctorId=" + doctorId;
   }
 
@@ -145,14 +152,19 @@ public class AdminUiController {
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
           LocalTime breakEnd,
       RedirectAttributes redirectAttributes) {
-    int createdSlots =
+    var result =
         scheduleService.generateSlots(
             doctorId, date, workStart, workEnd, durationMinutes, breakStart, breakEnd);
     redirectAttributes.addFlashAttribute(
-        createdSlots == 0 ? "error" : "success",
-        createdSlots == 0
-            ? "Слоты не созданы: проверьте время или повторы"
-            : "Создано слотов: " + createdSlots);
+        result.successful() && result.createdSlots() > 0 ? "success" : "error",
+        result.successful()
+            ? "Создано слотов: "
+                + result.createdSlots()
+                + ", пропущено дублей: "
+                + result.skippedDuplicateSlots()
+                + ", пропущено на перерыв: "
+                + result.skippedBreakSlots()
+            : result.error());
     return "redirect:/admin?doctorId=" + doctorId;
   }
 
