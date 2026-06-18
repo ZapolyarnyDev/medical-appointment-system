@@ -12,7 +12,7 @@
       <div class="page-title">
         <div>
           <h1>Регистратура</h1>
-          <p class="muted">Быстрый поиск пациента, подбор врача и запись на свободный слот.</p>
+          <p class="muted">Быстрый поиск пациента, подбор врача и запись на свободное время.</p>
         </div>
       </div>
       <div th:replace="~{fragments :: notices}"></div>
@@ -84,7 +84,7 @@
             <div class="summary-strip">
               <span th:text="${selectedDoctorId == null ? 'Врач не выбран' : 'Врач выбран'}"></span>
               <span th:text="${selectedPatientId == null ? 'Пациент не выбран' : 'Пациент выбран'}"></span>
-              <span th:text="${slots == null ? 'Слоты появятся после выбора врача' : 'Свободных слотов: ' + #lists.size(slots)}"></span>
+              <span th:text="${slots == null ? 'Время появится после выбора врача' : 'Свободных интервалов: ' + #lists.size(slots)}"></span>
             </div>
 
             <form class="fields" th:if="${selectedDoctorId != null}" th:action="@{/internal/registry/appointments}" method="post">
@@ -102,7 +102,7 @@
                 </select>
               </div>
               <div class="field">
-                <label for="slotId">Слот</label>
+                <label for="slotId">Время приема</label>
                 <select id="slotId" name="slotId" required>
                   <option value="">Выберите время</option>
                   <option
@@ -143,7 +143,12 @@
                 <td><span class="pill" th:text="${labels.appointmentStatus(appointment.status)}"></span></td>
                 <td>
                   <div class="stack" th:if="${appointment.status.name() == 'CREATED'}">
-                    <form class="actions" th:action="@{/internal/registry/appointments/cancel}" method="post">
+                    <form
+                      class="actions"
+                      th:action="@{/internal/registry/appointments/cancel}"
+                      method="post"
+                      onsubmit="this.querySelector('button[type=submit]').disabled = true"
+                    >
                       <input type="hidden" name="appointmentId" th:value="${appointment.id}" />
                       <input type="hidden" name="doctorId" th:value="${selectedDoctorId}" />
                       <input name="cancelReason" placeholder="Причина отмены" />
@@ -154,6 +159,7 @@
                       th:if="${selectedDoctorId != null and !#lists.isEmpty(slots)}"
                       th:action="@{/internal/registry/appointments/reschedule}"
                       method="post"
+                      onsubmit="this.querySelector('button[type=submit]').disabled = true"
                     >
                       <input type="hidden" name="appointmentId" th:value="${appointment.id}" />
                       <input type="hidden" name="doctorId" th:value="${selectedDoctorId}" />

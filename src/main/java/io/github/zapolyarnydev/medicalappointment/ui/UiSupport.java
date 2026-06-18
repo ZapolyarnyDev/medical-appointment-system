@@ -2,6 +2,7 @@ package io.github.zapolyarnydev.medicalappointment.ui;
 
 import io.github.zapolyarnydev.medicalappointment.appointment.AppointmentSource;
 import io.github.zapolyarnydev.medicalappointment.appointment.AppointmentStatus;
+import io.github.zapolyarnydev.medicalappointment.identity.StaffRole;
 import io.github.zapolyarnydev.medicalappointment.schedule.SlotStatus;
 import io.github.zapolyarnydev.medicalappointment.shared.config.OrganizationProperties;
 import java.security.Principal;
@@ -50,6 +51,14 @@ public class UiSupport {
     return switch (status) {
       case AVAILABLE -> "Свободен";
       case BOOKED -> "Занят";
+    };
+  }
+
+  public String staffRole(StaffRole role) {
+    return switch (role) {
+      case DOCTOR -> "Врач";
+      case REGISTRAR -> "Регистратор";
+      case CHIEF_DOCTOR -> "Главный врач";
     };
   }
 

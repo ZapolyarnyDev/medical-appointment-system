@@ -13,9 +13,9 @@ public class OpenApiConfig {
     return new OpenAPI()
         .info(
             new Info()
-                .title("Medical Appointment System API")
+                .title("Программный интерфейс системы записи на прием")
                 .version("0.0.1")
                 .description(
-                    "REST API for browsing doctors, schedule slots, and booking appointments."));
+                    "Методы для просмотра врачей, расписания и управления записями на прием."));
   }
 }

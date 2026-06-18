@@ -42,7 +42,7 @@
               <strong th:text="${deployment.endpoints.authBaseUrl}"></strong>
             </div>
             <div>
-              <span class="muted">Документация API</span>
+              <span class="muted">Документация интерфейса</span>
               <strong th:text="${security.publicDocsEnabled ? 'открыта' : 'закрыта'}"></strong>
             </div>
             <div>
@@ -106,7 +106,7 @@
         </section>
 
         <section class="panel span-4">
-          <div class="panel-header"><h2>Слот</h2></div>
+          <div class="panel-header"><h2>Время приема</h2></div>
           <div class="panel-body">
             <form class="stack" th:action="@{/admin/slots}" method="post">
               <div class="field">
@@ -215,12 +215,12 @@
           <div class="panel-body">
             <form class="stack" th:action="@{/admin/identity/patients}" method="post">
               <div class="field">
-                <label for="patientUsername">Keycloak username</label>
-                <input id="patientUsername" name="username" required />
+                <label for="patientUsername">Имя пользователя в системе входа</label>
+                <input id="patientUsername" name="username" placeholder="patient" required />
               </div>
               <div class="field">
-                <label for="patientSubject">Keycloak subject</label>
-                <input id="patientSubject" name="keycloakSubject" />
+                <label for="patientSubject">Уникальный идентификатор входа</label>
+                <input id="patientSubject" name="keycloakSubject" placeholder="Необязательно" />
               </div>
               <div class="field">
                 <label for="linkedPatientId">Пациент</label>
@@ -239,17 +239,17 @@
           <div class="panel-body">
             <form class="stack" th:action="@{/admin/identity/staff}" method="post">
               <div class="field">
-                <label for="staffUsername">Keycloak username</label>
-                <input id="staffUsername" name="username" required />
+                <label for="staffUsername">Имя пользователя в системе входа</label>
+                <input id="staffUsername" name="username" placeholder="doctor" required />
               </div>
               <div class="field">
-                <label for="staffSubject">Keycloak subject</label>
-                <input id="staffSubject" name="keycloakSubject" />
+                <label for="staffSubject">Уникальный идентификатор входа</label>
+                <input id="staffSubject" name="keycloakSubject" placeholder="Необязательно" />
               </div>
               <div class="field">
                 <label for="staffRole">Роль</label>
                 <select id="staffRole" name="role" required>
-                  <option th:each="role : ${staffRoles}" th:value="${role}" th:text="${role}"></option>
+                  <option th:each="role : ${staffRoles}" th:value="${role}" th:text="${labels.staffRole(role)}"></option>
                 </select>
               </div>
               <div class="field">
@@ -270,7 +270,7 @@
           <table th:if="${!#lists.isEmpty(patientAccounts)}">
             <thead>
               <tr>
-                <th>Username</th>
+                <th>Пользователь</th>
                 <th>Пациент</th>
                 <th>Активна</th>
               </tr>
@@ -278,7 +278,7 @@
             <tbody>
               <tr th:each="account : ${patientAccounts}">
                 <td th:text="${account.username}"></td>
-                <td th:text="'#' + ${account.patientId}"></td>
+                <td th:text="'Пациент №' + ${account.patientId}"></td>
                 <td><span class="pill" th:text="${account.active ? 'Да' : 'Нет'}"></span></td>
               </tr>
             </tbody>
@@ -291,7 +291,7 @@
           <table th:if="${!#lists.isEmpty(staffAccounts)}">
             <thead>
               <tr>
-                <th>Username</th>
+                <th>Пользователь</th>
                 <th>Роль</th>
                 <th>Врач</th>
               </tr>
@@ -299,8 +299,8 @@
             <tbody>
               <tr th:each="account : ${staffAccounts}">
                 <td th:text="${account.username}"></td>
-                <td><span class="pill" th:text="${account.role}"></span></td>
-                <td th:text="${account.doctorId == null ? '-' : '#' + account.doctorId}"></td>
+                <td><span class="pill" th:text="${labels.staffRole(account.role)}"></span></td>
+                <td th:text="${account.doctorId == null ? '-' : 'Врач №' + account.doctorId}"></td>
               </tr>
             </tbody>
           </table>
@@ -321,7 +321,7 @@
               <tr th:each="doctor : ${doctors}">
                 <td th:text="${doctor.fullName}"></td>
                 <td th:text="${doctor.cabinet ?: '-'}"></td>
-                <td><a class="button" th:href="@{/admin(doctorId=${doctor.id})}">Слоты</a></td>
+                <td><a class="button" th:href="@{/admin(doctorId=${doctor.id})}">Расписание</a></td>
               </tr>
             </tbody>
           </table>
@@ -330,10 +330,10 @@
         <section class="panel span-7">
           <div class="panel-header"><h2>Расписание</h2></div>
           <div th:if="${selectedDoctorId == null}" class="empty">Выберите врача</div>
-          <div th:if="${selectedDoctorId != null and #lists.isEmpty(slots)}" class="empty">Слотов нет</div>
+          <div th:if="${selectedDoctorId != null and #lists.isEmpty(slots)}" class="empty">Время приема пока не создано</div>
           <div class="panel-body" th:if="${selectedDoctorId != null and !#lists.isEmpty(slots)}">
             <div class="summary-strip">
-              <span th:text="'Всего слотов: ' + ${#lists.size(slots)}"></span>
+              <span th:text="'Всего интервалов: ' + ${#lists.size(slots)}"></span>
               <span
                 th:text="'Свободно: ' + ${#lists.size(slots.?[status.name() == 'AVAILABLE'])}"
               ></span>

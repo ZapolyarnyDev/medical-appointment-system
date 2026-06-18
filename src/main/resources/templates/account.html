@@ -75,9 +75,10 @@
                   th:if="${appointment.status.name() == 'CREATED'}"
                   th:action="@{/account/appointments/cancel}"
                   method="post"
+                  onsubmit="this.querySelector('button[type=submit]').disabled = true"
                 >
                   <input type="hidden" name="appointmentId" th:value="${appointment.id}" />
-                  <button class="button" type="submit">Отменить</button>
+                  <button class="button danger" type="submit">Отменить</button>
                 </form>
               </td>
             </tr>

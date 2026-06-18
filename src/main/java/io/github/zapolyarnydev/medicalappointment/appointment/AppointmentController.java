@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/appointments")
 @RequiredArgsConstructor
-@Tag(name = "Appointments", description = "Appointment booking and lookup operations")
+@Tag(name = "Записи на прием", description = "Создание, отмена и просмотр записей")
 public class AppointmentController {
 
   private final AppointmentBookingService appointmentBookingService;
