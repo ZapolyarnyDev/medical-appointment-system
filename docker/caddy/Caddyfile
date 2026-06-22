@@ -15,7 +15,7 @@
 
 	@public host {$PUBLIC_HOST:public.localhost}
 	handle @public {
-		@closed path /internal/* /admin/*
+		@closed path /internal /internal/* /admin /admin/*
 		respond @closed 404
 		reverse_proxy app:8080
 	}

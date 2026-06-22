@@ -27,7 +27,6 @@ services:
         aliases:
           - ${PUBLIC_HOST:-public.localhost}
           - ${INTERNAL_HOST:-internal.localhost}
-          - ${AUTH_HOST:-auth.localhost}
 
   keycloak:
     environment:

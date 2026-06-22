@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     image: ${APP_IMAGE:-medical-appointment-system:local}
     container_name: medical-appointment-app
+    restart: on-failure:5
     environment:
       SERVER_PORT: 8080
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-}
@@ -72,18 +73,19 @@ services:
   keycloak:
     image: ${KEYCLOAK_IMAGE:-quay.io/keycloak/keycloak:26.6.3}
     container_name: medical-appointment-keycloak
+    entrypoint:
+      - /bin/sh
     command:
-      - sh
       - -c
       - |
-        mkdir -p /opt/keycloak/data/import
-        sed \
-          -e "s|__APP_PUBLIC_URL__|$${APP_PUBLIC_URL}|g" \
-          -e "s|__APP_INTERNAL_URL__|$${APP_INTERNAL_URL}|g" \
-          -e "s|__APP_AUTH_URL__|$${APP_AUTH_URL}|g" \
-          /opt/keycloak/realm-template/medical-appointment-realm.json \
-          > /opt/keycloak/data/import/medical-appointment-realm.json
-        /opt/keycloak/bin/kc.sh start-dev --import-realm
+          mkdir -p /opt/keycloak/data/import
+          sed \
+            -e "s|__APP_PUBLIC_URL__|$${APP_PUBLIC_URL}|g" \
+            -e "s|__APP_INTERNAL_URL__|$${APP_INTERNAL_URL}|g" \
+            -e "s|__APP_AUTH_URL__|$${APP_AUTH_URL}|g" \
+            /opt/keycloak/realm-template/medical-appointment-realm.json \
+            > /opt/keycloak/data/import/medical-appointment-realm.json
+          exec /opt/keycloak/bin/kc.sh start-dev --import-realm
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME:-admin}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
@@ -99,6 +101,10 @@ services:
     volumes:
       - keycloak-data:/opt/keycloak/data
       - ./docker/keycloak/realm:/opt/keycloak/realm-template:ro
+    networks:
+      default:
+        aliases:
+          - ${AUTH_HOST:-auth.localhost}
 
 volumes:
   postgres-data:
