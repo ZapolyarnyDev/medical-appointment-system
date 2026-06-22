@@ -1,7 +1,5 @@
 services:
   app:
-    profiles:
-      - app
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,7 +7,11 @@ services:
     container_name: medical-appointment-app
     environment:
       SERVER_PORT: 8080
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-}
+      DEPLOYMENT_PROFILE: ${DEPLOYMENT_PROFILE:-local}
       PUBLIC_DOCS_ENABLED: ${PUBLIC_DOCS_ENABLED:-true}
+      REQUIRE_SECURE_COOKIES: ${REQUIRE_SECURE_COOKIES:-false}
+      EXPOSE_DIAGNOSTICS: ${EXPOSE_DIAGNOSTICS:-false}
       ORGANIZATION_NAME: ${ORGANIZATION_NAME:-Система записи на прием}
       ORGANIZATION_PUBLIC_ADDRESS: ${ORGANIZATION_PUBLIC_ADDRESS:-Адрес медицинской организации}
       ORGANIZATION_INTERNAL_ADDRESS: ${ORGANIZATION_INTERNAL_ADDRESS:-Внутренний контур медицинской организации}
@@ -71,17 +73,32 @@ services:
     image: ${KEYCLOAK_IMAGE:-quay.io/keycloak/keycloak:26.6.3}
     container_name: medical-appointment-keycloak
     command:
-      - start-dev
-      - --import-realm
+      - sh
+      - -c
+      - |
+        mkdir -p /opt/keycloak/data/import
+        sed \
+          -e "s|__APP_PUBLIC_URL__|$${APP_PUBLIC_URL}|g" \
+          -e "s|__APP_INTERNAL_URL__|$${APP_INTERNAL_URL}|g" \
+          -e "s|__APP_AUTH_URL__|$${APP_AUTH_URL}|g" \
+          /opt/keycloak/realm-template/medical-appointment-realm.json \
+          > /opt/keycloak/data/import/medical-appointment-realm.json
+        /opt/keycloak/bin/kc.sh start-dev --import-realm
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME:-admin}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
       KC_HTTP_PORT: 8080
+      KC_HTTP_ENABLED: ${KC_HTTP_ENABLED:-true}
+      KC_PROXY_HEADERS: ${KC_PROXY_HEADERS:-xforwarded}
+      KC_HOSTNAME: ${KEYCLOAK_HOSTNAME:-http://auth.localhost:8080}
+      APP_PUBLIC_URL: ${APP_PUBLIC_URL:-http://public.localhost:8080}
+      APP_INTERNAL_URL: ${APP_INTERNAL_URL:-http://internal.localhost:8080}
+      APP_AUTH_URL: ${APP_AUTH_URL:-http://auth.localhost:8080}
     ports:
       - "${KEYCLOAK_PORT:-8081}:8080"
     volumes:
       - keycloak-data:/opt/keycloak/data
-      - ./docker/keycloak/realm:/opt/keycloak/data/import:ro
+      - ./docker/keycloak/realm:/opt/keycloak/realm-template:ro
 
 volumes:
   postgres-data:

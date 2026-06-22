@@ -1,19 +1,19 @@
 {
-	auto_https off
+	auto_https {$CADDY_AUTO_HTTPS:off}
 }
 
-:80 {
-	@auth host auth.localhost
+{$CADDY_SITE_ADDRESS::80} {
+	@auth host {$AUTH_HOST:auth.localhost}
 	handle @auth {
 		reverse_proxy keycloak:8080
 	}
 
-	@internal host internal.localhost
+	@internal host {$INTERNAL_HOST:internal.localhost}
 	handle @internal {
 		reverse_proxy app:8080
 	}
 
-	@public host public.localhost
+	@public host {$PUBLIC_HOST:public.localhost}
 	handle @public {
 		@closed path /internal/* /admin/*
 		respond @closed 404

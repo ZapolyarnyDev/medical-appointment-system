@@ -41,11 +41,13 @@
         "http://localhost:8080/*",
         "http://public.localhost:8080/*",
         "http://localhost:8080/account/*",
-        "http://localhost:8080/booking/*"
+        "http://localhost:8080/booking/*",
+        "__APP_PUBLIC_URL__/*"
       ],
       "webOrigins": [
         "http://localhost:8080",
-        "http://public.localhost:8080"
+        "http://public.localhost:8080",
+        "__APP_PUBLIC_URL__"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256"
@@ -81,11 +83,13 @@
         "http://internal.localhost:8080/*",
         "http://localhost:8080/internal/*",
         "http://localhost:8080/admin/*",
-        "http://localhost:8080/swagger-ui/*"
+        "http://localhost:8080/swagger-ui/*",
+        "__APP_INTERNAL_URL__/*"
       ],
       "webOrigins": [
         "http://localhost:8080",
-        "http://internal.localhost:8080"
+        "http://internal.localhost:8080",
+        "__APP_INTERNAL_URL__"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256"

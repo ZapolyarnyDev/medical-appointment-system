@@ -6,8 +6,17 @@ services:
     container_name: medical-appointment-proxy
     ports:
       - "${PUBLIC_HTTP_PORT:-8080}:80"
+      - "${PUBLIC_HTTPS_PORT:-8443}:443"
+    environment:
+      CADDY_SITE_ADDRESS: ${CADDY_SITE_ADDRESS:-:80}
+      CADDY_AUTO_HTTPS: ${CADDY_AUTO_HTTPS:-off}
+      PUBLIC_HOST: ${PUBLIC_HOST:-public.localhost}
+      INTERNAL_HOST: ${INTERNAL_HOST:-internal.localhost}
+      AUTH_HOST: ${AUTH_HOST:-auth.localhost}
     volumes:
       - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
     depends_on:
       app:
         condition: service_healthy
@@ -16,12 +25,16 @@ services:
     networks:
       default:
         aliases:
-          - public.localhost
-          - internal.localhost
-          - auth.localhost
+          - ${PUBLIC_HOST:-public.localhost}
+          - ${INTERNAL_HOST:-internal.localhost}
+          - ${AUTH_HOST:-auth.localhost}
 
   keycloak:
     environment:
       KC_HTTP_ENABLED: true
       KC_PROXY_HEADERS: xforwarded
       KC_HOSTNAME: ${KEYCLOAK_HOSTNAME:-http://auth.localhost:8080}
+
+volumes:
+  caddy-data:
+  caddy-config:
